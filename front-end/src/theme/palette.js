@@ -13,6 +13,7 @@ const PRIMARY = {
   main: '#0162C4',
   dark: '#007B55',
   darker: '#005249',
+  shadow: '0 0 2px rgba(0, 0, 0, .25)',
 };
 const SECONDARY = {
   lighter: '#D6E4FF',
@@ -70,6 +71,7 @@ const GREY = {
   500_56: alpha('#919EAB', 0.56),
   500_80: alpha('#919EAB', 0.8),
 };
+
 
 const GRADIENTS = {
   primary: createGradient(PRIMARY.light, PRIMARY.main),

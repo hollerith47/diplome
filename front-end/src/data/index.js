@@ -19,7 +19,7 @@ const Profile_Menu = [
     icon: <Gear />,
   },
   {
-    title: "Profile",
+    title: "Logout",
     icon: <SignOut />,
   },
 ];
@@ -50,7 +50,7 @@ const ChatList = [
   {
     id: 0,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "9:36",
     unread: 0,
@@ -60,7 +60,7 @@ const ChatList = [
   {
     id: 1,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "12:02",
     unread: 2,
@@ -70,7 +70,7 @@ const ChatList = [
   {
     id: 2,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "10:35",
     unread: 3,
@@ -80,7 +80,7 @@ const ChatList = [
   {
     id: 3,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "04:00",
     unread: 0,
@@ -90,7 +90,7 @@ const ChatList = [
   {
     id: 4,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -100,7 +100,7 @@ const ChatList = [
   {
     id: 5,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -110,7 +110,7 @@ const ChatList = [
   {
     id: 6,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -120,7 +120,7 @@ const ChatList = [
   {
     id: 7,
     img: faker.image.avatar(),
-    name: faker.name.firstName(),
+    name: faker.person.firstName(),
     msg: faker.music.songName(),
     time: "08:42",
     unread: 0,
@@ -177,15 +177,15 @@ const Chat_History = [
   {
     type: "msg",
     subtype: "doc",
-    message: "Yes sure, here you go.",
+    message: faker.lorem.sentence(5),
     incoming: true,
     outgoing: false,
   },
   {
     type: "msg",
     subtype: "link",
-    preview: faker.image.cats(),
-    message: "Yep, I can also do that",
+    preview: faker.image.urlLoremFlickr({ category: 'cats' }),
+    message: faker.lorem.sentence(4),
     incoming: true,
     outgoing: false,
   },
@@ -193,7 +193,7 @@ const Chat_History = [
     type: "msg",
     subtype: "reply",
     reply: "This is a reply",
-    message: "Yep, I can also do that",
+    message: faker.lorem.sentence(5),
     incoming: false,
     outgoing: true,
   },
@@ -220,6 +220,88 @@ const Message_options = [
   },
 ];
 
+const SHARED_LINKS = [
+  {
+    type: "msg",
+    subtype: "link",
+    preview: faker.image.urlLoremFlickr({ category: 'cats' }),
+    message: faker.lorem.words(10),
+    incoming: true,
+    outgoing: false,
+  },
+  {
+    type: "msg",
+    subtype: "link",
+    preview: faker.image.urlLoremFlickr({ category: 'cats' }),
+    message: faker.lorem.words(10),
+    incoming: true,
+    outgoing: false,
+  },
+  {
+    type: "msg",
+    subtype: "link",
+    preview: faker.image.urlLoremFlickr({ category: 'cats' }),
+    message: faker.lorem.words(10),
+    incoming: true,
+    outgoing: false,
+  },
+  {
+    type: "msg",
+    subtype: "link",
+    preview: faker.image.urlLoremFlickr({ category: 'cats' }),
+    message: faker.lorem.words(10),
+    incoming: true,
+    outgoing: false,
+  },
+  {
+    type: "msg",
+    subtype: "link",
+    preview: faker.image.urlLoremFlickr({ category: 'cats' }),
+    message: faker.lorem.words(10),
+    incoming: true,
+    outgoing: false,
+  }
+
+]
+
+const SHARED_DOCS = [
+  {
+    type: "msg",
+    subtype: "doc",
+    message: faker.lorem.sentence(5),
+    incoming: true,
+    outgoing: false,
+  },
+  {
+    type: "msg",
+    subtype: "doc",
+    message: faker.lorem.sentence(5),
+    incoming: true,
+    outgoing: false,
+  },
+  {
+    type: "msg",
+    subtype: "doc",
+    message: faker.lorem.sentence(5),
+    incoming: true,
+    outgoing: false,
+  },
+  {
+    type: "msg",
+    subtype: "doc",
+    message: faker.lorem.sentence(5),
+    incoming: true,
+    outgoing: false,
+  },
+  {
+    type: "msg",
+    subtype: "doc",
+    message: faker.lorem.sentence(5),
+    incoming: true,
+    outgoing: false,
+  },
+
+]
 export {
   Profile_Menu,
   Nav_Setting,
@@ -227,4 +309,6 @@ export {
   ChatList,
   Chat_History,
   Message_options,
+  SHARED_LINKS,
+  SHARED_DOCS
 };
