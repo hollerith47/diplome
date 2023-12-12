@@ -6,6 +6,7 @@ import img_right from "../../assets/Images/register_img.png";
 import {X} from "phosphor-react";
 import RegisterForm from "../../sections/auth/RegisterForm";
 import DialogContainer from "../../components/DialogContainer";
+import CLoseDialogIcon from "../../components/CLoseDialogIcon";
 
 
 const Register = () => {
@@ -30,12 +31,7 @@ const Register = () => {
                 <Typography variant={"h4"}>Register</Typography>
                 {!isDesktop &&
                   <Stack sx={{alignSelf: 'flex-end'}}>
-                    <IconButton onClick={handleCloseRegisterDialog}>
-                      <Stack alignItems={"center"} justifyContent={"center"}
-                             sx={{borderRadius: "50%", border: "1px solid"}}>
-                        <X/>
-                      </Stack>
-                    </IconButton>
+                    <CLoseDialogIcon handleCloseDialog={handleCloseRegisterDialog} />
                   </Stack>
                 }
               </Stack>
@@ -68,12 +64,7 @@ const Register = () => {
                 <Stack direction={"row"} justifyContent={"space-between"}>
                   <Typography variant={"h4"}>Welcome!</Typography>
                   <Stack sx={{alignSelf: 'flex-end'}}>
-                    <IconButton onClick={handleCloseRegisterDialog}>
-                      <Stack alignItems={"center"} justifyContent={"center"}
-                             sx={{borderRadius: "50%", border: "1px solid"}}>
-                        <X/>
-                      </Stack>
-                    </IconButton>
+                    <CLoseDialogIcon handleCloseDialog={handleCloseRegisterDialog} />
                   </Stack>
                 </Stack>
                 <Stack pt={5}>

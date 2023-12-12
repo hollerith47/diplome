@@ -72,11 +72,11 @@ const CreateGroupForm = ({handleClose}) => {
     </FormProvider>
   )
 }
-const CreateGroup = ({open, handleClose}) => {
+const CreateGroupDialog = ({open, handleClose}) => {
   return (
     <>
       <DialogContainer
-        openDialog={true}
+        openDialog={open}
         maxWidth={"xs"}
         handleCloseDialog={handleClose}
         title={"Create New Group"}
@@ -91,4 +91,4 @@ const CreateGroup = ({open, handleClose}) => {
   );
 };
 
-export default CreateGroup;
+export default CreateGroupDialog;

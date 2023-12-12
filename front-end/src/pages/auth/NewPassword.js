@@ -5,6 +5,7 @@ import DialogContainer from "../../components/DialogContainer";
 import {IconButton, Link, Stack, Typography} from "@mui/material";
 import {CaretLeft, X} from "phosphor-react";
 import NewPasswordForm from "../../sections/auth/NewPasswordForm";
+import CLoseDialogIcon from "../../components/CLoseDialogIcon";
 
 const NewPassword = () => {
   const [openNewPasswordDialog, setOpenNewPasswordDialog] = useState(true);
@@ -27,11 +28,7 @@ const NewPassword = () => {
             Reset Password?
           </Typography>
           <Stack>
-            <IconButton onClick={handleCloseNewPasswordDialog}>
-              <Stack alignItems={"center"} justifyContent={"center"} sx={{borderRadius: "50%", border: "1px solid"}}>
-                <X/>
-              </Stack>
-            </IconButton>
+            <CLoseDialogIcon handleCloseDialog={handleCloseNewPasswordDialog} />
           </Stack>
         </Stack>
         <Typography sx={{color: "text.secondary", mb: 5}}>

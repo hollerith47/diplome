@@ -50,7 +50,7 @@ const Header = () => {
           <IconButton><Phone/></IconButton>
           <IconButton><MagnifyingGlass/></IconButton>
           <Divider orientation={"vertical"} flexItem/>
-          <IconButton><CaretDown/></IconButton>
+          <IconButton onClick={()=> dispatch(ToggleSidebar())}><CaretDown/></IconButton>
         </Stack>
       </Stack>
     </Box>

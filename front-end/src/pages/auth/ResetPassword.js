@@ -6,6 +6,7 @@ import DialogContainer from "../../components/DialogContainer";
 // import useResponsive from "../../hooks/useResponsive";
 import {CaretLeft, X} from "phosphor-react";
 import ResetPasswordForm from "../../sections/auth/ResetPasswordForm";
+import CLoseDialogIcon from "../../components/CLoseDialogIcon";
 
 const ResetPassword = () => {
   const [openResetPasswordDialog, setOpenResetPasswordDialog] = useState(true);
@@ -28,11 +29,7 @@ const ResetPassword = () => {
             Forgot Password?
           </Typography>
           <Stack>
-            <IconButton onClick={handleCloseResetPasswordDialog}>
-              <Stack alignItems={"center"} justifyContent={"center"} sx={{borderRadius: "50%", border: "1px solid"}}>
-                <X/>
-              </Stack>
-            </IconButton>
+            <CLoseDialogIcon handleCloseDialog={handleCloseResetPasswordDialog} />
           </Stack>
         </Stack>
         <Typography sx={{color: "text.secondary", mb: 5}}>

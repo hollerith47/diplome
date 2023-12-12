@@ -300,6 +300,39 @@ const SHARED_DOCS = [
     incoming: true,
     outgoing: false,
   },
+]
+
+const CALL_LOG = [
+  {
+    key: 1,
+    incoming: true,
+    videoCall: false,
+    time: "14:15"
+  },
+  {
+    key: 2,
+    incoming: false,
+    videoCall: false,
+    time: "17:43"
+  },
+  {
+    key: 3,
+    incoming: false,
+    videoCall: false,
+    time: "15:50"
+  },
+  {
+    key: 4,
+    incoming: true,
+    videoCall: true,
+    time: "16:53"
+  },
+  {
+    key: 1,
+    incoming: true,
+    videoCall: true,
+    time: "16:53"
+  }
 
 ]
 export {
@@ -310,5 +343,6 @@ export {
   Chat_History,
   Message_options,
   SHARED_LINKS,
-  SHARED_DOCS
+  SHARED_DOCS,
+  CALL_LOG
 };

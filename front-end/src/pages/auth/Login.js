@@ -7,6 +7,7 @@ import {X} from "phosphor-react";
 import LoginForm from "../../sections/auth/LoginForm";
 import useResponsive from "../../hooks/useResponsive";
 import DialogContainer from "../../components/DialogContainer";
+import CLoseDialogIcon from "../../components/CLoseDialogIcon";
 
 const Login = () => {
   const [openLoginDialog, setOpenLoginDialog] = useState(true);
@@ -47,11 +48,7 @@ const Login = () => {
             <Stack direction={"row"} justifyContent={"space-between"}>
               <Typography variant={"h4"}>Log In</Typography>
               <Stack sx={{ alignSelf: 'flex-end' }}>
-                <IconButton onClick={handleCloseLoginDialog}>
-                  <Stack alignItems={"center"} justifyContent={"center"} sx={{borderRadius: "50%", border: "1px solid"}}>
-                    <X/>
-                  </Stack>
-                </IconButton>
+                <CLoseDialogIcon handleCloseDialog={handleCloseLoginDialog} />
               </Stack>
             </Stack>
           {/*  Login form */}

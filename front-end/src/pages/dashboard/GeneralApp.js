@@ -32,7 +32,7 @@ const GeneralApp = () => {
       </Box>
       {/*  contact Info*/}
       {sidebar.open && (() => {
-        console.log(sidebar)
+        // console.log(sidebar)
         switch (sidebar.type) {
           case 'CONTACT':
             //render contact component
