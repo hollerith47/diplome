@@ -19,7 +19,7 @@ const CreateCallDialog = ({open, handleClose}) => {
         <Stack>
           <Stack direction={"row"} sx={{width: "100%"}}>
             <Stack sx={{flexGrow: 1}}>
-              <Search>
+              <Search bgColor={"#EAF2FE"}>
                 <SearchIconWrapper>
                   <MagnifyingGlass color="#709CE6"/>
                 </SearchIconWrapper>

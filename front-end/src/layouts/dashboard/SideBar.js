@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Avatar, Box, Divider, IconButton, Menu, MenuItem, Stack} from "@mui/material";
 import Logo from "../../assets/Images/logo.ico";
 import {Nav_Buttons, Profile_Menu} from "../../data";
 import {Gear} from "phosphor-react";
 import AntSwitch from "../../components/AntSwitch";
+import {useDispatch, useSelector} from "react-redux";
+import {UpdateSidebarLink} from "../../redux/slices/appSlice";
 import {faker} from "@faker-js/faker";
 import {useTheme} from "@mui/material/styles";
 import useSettings from "../../hooks/useSettings";
@@ -38,17 +40,27 @@ const getMenuPath = (index) => {
   }
 }
 
+const dispatchAvatarOptionsIndex = (index) => {
+  switch (index) {
+    case 2:
+      return 0;
+    default:
+      return 3;
+  }
+}
+
 const SideBar = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  // console.log(theme)
-  const [selected, setSelected] = useState(0);
+  const dispatch = useDispatch();
+  const {sidebar} = useSelector((store) => store.app);
+  const linkIndex = sidebar.linkSelected;
+  // console.log(linkIndex, "selected link index")
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
-    // navigate("/profile");
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -91,16 +103,16 @@ const SideBar = () => {
               sx={{width: "max-content"}}
             >
               {Nav_Buttons.map((item) => (
-                item.index === selected ?
+                item.index === linkIndex ?
                   <Box key={item.index} sx={{backgroundColor: theme.palette.primary.main, borderRadius: 1.5}}>
                     <IconButton
-                      onClick={() => navigate(getPath(item.index))}
+                      // onClick={() => navigate(getPath(item.index))}
                       sx={{width: "max-content", color: "#fff"}}>{item.icon}</IconButton>
                   </Box>
                   :
                   <IconButton
                     onClick={() => {
-                      setSelected(item.index);
+                      dispatch(UpdateSidebarLink({linkSelected: item.index}));
                       navigate(getPath(item.index));
                     }}
                     sx={{width: "max-content"}} key={item.index}
@@ -110,14 +122,10 @@ const SideBar = () => {
               ))}
               <Divider sx={{width: "48px"}}/>
               {
-                selected === 3 ?
+                linkIndex === 3 ?
                   <Box sx={{backgroundColor: theme.palette.primary.main, borderRadius: 1.5}}>
                     <IconButton
                       sx={{width: "max-content", color: "#fff"}}
-                      onClick={() => {
-                        setSelected(3)
-                        navigate(getPath(3))
-                      }}
                     >
                       <Gear/>
                     </IconButton>
@@ -125,10 +133,9 @@ const SideBar = () => {
                   :
                   <IconButton
                     onClick={() => {
-                      setSelected(3)
+                      dispatch(UpdateSidebarLink({linkSelected: 3}));
                       navigate(getPath(3))
-                    }
-                    }
+                    }}
                   >
                     <Gear/>
                   </IconButton>
@@ -170,9 +177,10 @@ const SideBar = () => {
             >
               <Stack spacing={1} px={1}>
                 {Profile_Menu.map((item, index) => (
-                  <MenuItem onClick={()=>{
+                  <MenuItem onClick={() => {
                     handleClose();
                     navigate(getMenuPath(index))
+                    dispatch(UpdateSidebarLink({linkSelected: dispatchAvatarOptionsIndex(index)}));
                   }}>
                     <Stack
                       direction={"row"} sx={{width: 100}}
@@ -189,7 +197,6 @@ const SideBar = () => {
           </Stack>
         </Stack>
       </Box>
-
     </>
   );
 };

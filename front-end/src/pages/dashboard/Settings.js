@@ -5,15 +5,20 @@ import useResponsive from "../../hooks/useResponsive";
 import {faker} from "@faker-js/faker";
 import {Bell, CaretLeft, ClipboardText, Image, Info, Key, Keyboard, Lock, MarkerCircle} from "phosphor-react";
 import Shortcuts from "../../sections/settings/Shortcuts";
+import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {UpdateSidebarLink} from "../../redux/slices/appSlice";
 
 const Settings = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isDesktop = useResponsive("up", "md");
   const [openShortcuts, setOpenShortcuts] = useState(false);
 
   const handleOpenShortcuts = () => {
     setOpenShortcuts(true);
-    console.log("clicked")
+    // console.log("clicked")
   }
 
   const handleCloseShortcuts = () => {
@@ -99,7 +104,10 @@ const Settings = () => {
           <Stack p={3} spacing={5}>
             {/*Header */}
             <Stack direction={"row"} spacing={3} alignItems={"center"}>
-              <IconButton>
+              <IconButton onClick={()=>{
+                navigate("/app");
+                dispatch(UpdateSidebarLink({linkSelected:0}))
+              }}>
                 <CaretLeft/>
               </IconButton>
               <Typography variant={"h6"}>Settings</Typography>

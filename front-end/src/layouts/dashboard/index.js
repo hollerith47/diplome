@@ -7,7 +7,7 @@ const isAuthenticated = true;
 
 const DashboardLayout = () => {
   if (!isAuthenticated){
-    return <Navigate to={"/auth/login"}/>
+    return <Navigate to={"/landing"}/>
   }
   return (
     <>
