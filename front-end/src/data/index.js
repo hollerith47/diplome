@@ -151,7 +151,7 @@ const Chat_History = [
   },
   {
     type: "msg",
-    message: "Can you send me an abstarct image?",
+    message: "Can you send me an abstract image?",
     incoming: false,
     outgoing: true,
   },

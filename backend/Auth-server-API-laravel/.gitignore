@@ -17,5 +17,3 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/backend/auth-server-nextjs/node_modules
-/backend/auth-server-nextjs/public/build
