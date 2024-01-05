@@ -18,5 +18,9 @@ yarn-error.log
 /.idea
 /.vscode
 /backend/auth-server-nextjs/node_modules
+/backend/auth-server-nextjs/*.env
 /backend/auth-server-nextjs/public/build
 *.pdf
+
+*.env
+!.env.example
