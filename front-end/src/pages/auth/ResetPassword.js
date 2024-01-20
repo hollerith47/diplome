@@ -18,6 +18,8 @@ const ResetPassword = () => {
     navigate("/auth/login");
   }
 
+
+
   return (
     <DialogContainer
       openDialog={openResetPasswordDialog}

@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
-import { IconButton, Link, Stack, Typography} from "@mui/material";
+import { Link, Stack, Typography} from "@mui/material";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
 import useResponsive from "../../hooks/useResponsive";
 import img_right from "../../assets/Images/register_img.png";
-import {X} from "phosphor-react";
 import RegisterForm from "../../sections/auth/RegisterForm";
 import DialogContainer from "../../components/DialogContainer";
 import CLoseDialogIcon from "../../components/CLoseDialogIcon";
@@ -37,7 +36,7 @@ const Register = () => {
               </Stack>
               {/*  Login form */}
               <Stack pt={5} spacing={5}>
-                <RegisterForm />
+                <RegisterForm isSucceed={false}/>
               </Stack>
               <Typography
                 component={"div"}

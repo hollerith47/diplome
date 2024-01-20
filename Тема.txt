@@ -1,2 +1,6 @@
 Разработка клиент-серверного мессенджер с фильтрацией дистрибутивного контента
 
+check photo and video before saving https://www.youtube.com/watch?v=jkx30sFfIfg
+
+training with tensorflow https://www.youtube.com/watch?v=vMOF2UG6cKc
+

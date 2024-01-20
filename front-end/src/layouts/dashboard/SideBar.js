@@ -10,6 +10,7 @@ import {faker} from "@faker-js/faker";
 import {useTheme} from "@mui/material/styles";
 import useSettings from "../../hooks/useSettings";
 import {useNavigate} from "react-router-dom";
+import {LogOutUser} from "../../redux/slices/authSlice";
 
 const getPath = (index) => {
   switch (index) {
@@ -54,6 +55,7 @@ const SideBar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {sidebar} = useSelector((store) => store.app);
+  const { token } = useSelector((store) => store.auth);
   const linkIndex = sidebar.linkSelected;
   // console.log(linkIndex, "selected link index")
 
@@ -181,6 +183,9 @@ const SideBar = () => {
                     handleClose();
                     navigate(getMenuPath(index))
                     dispatch(UpdateSidebarLink({linkSelected: dispatchAvatarOptionsIndex(index)}));
+                    if (index === 2) {
+                      dispatch(LogOutUser(token))
+                    }
                   }}>
                     <Stack
                       direction={"row"} sx={{width: 100}}

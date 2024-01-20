@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class LoginAuthController extends Controller
 {
     use HttpResponses;
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
         $request->validated($request->all());
         if (Auth::attempt($request->only("email", "password"))){

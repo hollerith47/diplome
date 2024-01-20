@@ -14,13 +14,19 @@ const NewPasswordForm = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const NewPasswordSchema = Yup.object().shape({
-    newPassword: Yup.string().required("New password is required"),
-    confirmPassword: Yup.string().required("Confirm Password is required").oneOf([Yup.ref("newPassword"), null], "Confirm Password not match with password"),
+    email: Yup.string()
+      .required("Email is required")
+      .email("Email must be a valid email address"),
+    password: Yup.string().required("New password is required"),
+    otp: Yup.string().required("OTP is required"),
+    password_confirmation: Yup.string().required("Confirm Password is required").oneOf([Yup.ref("newPassword"), null], "Confirm Password not match with password"),
   });
 
   const defaultValues = {
-    newPassword: "",
-    confirmPassword: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+    otp: "",
   }
   const methods = useForm({
     resolver: yupResolver(NewPasswordSchema),
@@ -57,9 +63,9 @@ const NewPasswordForm = () => {
         {!!errors.afterSubmit && <Alert security="error">{errors.afterSubmit.message}</Alert>}
         {isSubmitting && <Alert security="info">{"form is submitting ..."}</Alert>}
         {isSubmitSuccessful && <Alert security="success">{"form submitted successfully"}</Alert>}
-
+        <RHFTextField name={"email"} label="Email address"/>
         <RHFTextField
-          name={"newPassword"}
+          name={"password"}
           label="New Password"
           type={showNewPassword ? 'text' : "password"}
           InputProps={{

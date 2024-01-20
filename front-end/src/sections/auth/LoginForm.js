@@ -3,14 +3,17 @@ import * as Yup from 'yup';
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useNavigate, Link as RouterLink} from "react-router-dom";
-
-import FormProvider, {RHFTextField} from "../../components/hook-form";
 import {Alert, Button, IconButton, InputAdornment, Link, Stack} from "@mui/material";
 import {Eye, EyeSlash} from "phosphor-react";
 import {useTheme} from "@mui/material/styles";
+import {useDispatch} from "react-redux";
+
+import FormProvider, {RHFTextField} from "../../components/hook-form";
+import {LoginUser} from "../../redux/slices/authSlice";
 
 const LoginForm = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const LoginSchema = Yup.object().shape({
@@ -37,9 +40,16 @@ const LoginForm = () => {
   const onSubmit = async (data) => {
     try {
       // submit data to server api
-      console.log("form submitted", data);
-      navigate("/app");
-      reset();
+      // console.log("form submitted", data);
+      const promise = dispatch(LoginUser(data))
+      promise
+        .then((response) => {
+            console.log("Response de la promesse :", response)
+          }
+        )
+        .catch((error) => console.log("error", error))
+      // navigate("/app");
+      // reset();
 
     } catch (error) {
       console.log(error);
@@ -92,18 +102,18 @@ const LoginForm = () => {
         type={"submit"}
         variant={"contained"}
         sx={{
-            backgroundColor: theme.palette.primary.main,
-            color: (theme) => theme.palette.mode === "light" ? "common.white" : "grey.800",
-            '&:hover': {
-              backgroundColor: "text.primary",
-              color: (theme) => theme.palette.mode === "light" ? "common.white" : "grey.800"
-            }
-          }}
-          >
-          Log in now
-          < /Button>
-          </FormProvider>
-          );
-        };
+          backgroundColor: theme.palette.primary.main,
+          color: (theme) => theme.palette.mode === "light" ? "common.white" : "grey.800",
+          '&:hover': {
+            backgroundColor: "text.primary",
+            color: (theme) => theme.palette.mode === "light" ? "common.white" : "grey.800"
+          }
+        }}
+      >
+        Log in now
+      < /Button>
+    </FormProvider>
+  );
+};
 
 export default LoginForm;

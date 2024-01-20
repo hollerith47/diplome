@@ -11,22 +11,28 @@ import {useNavigate} from "react-router-dom";
 
 const LoginForm = () => {
   const theme = useTheme();
+  const [isSucceed, setIsSucceed] = useState(false);
+  const [isOtpSucceed, setOtpIsSucceed] = useState(false);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required("First Name is required"),
-    lastName: Yup.string().required("Last Name is required"),
+    first_name: Yup.string().required("First Name is required"),
+    last_name: Yup.string().required("Last Name is required"),
     email: Yup.string()
       .required("Email is required")
       .email("Email must be a valid email address"),
     password: Yup.string().required("Password is required"),
+    password_confirmation: Yup.string().required("Password is required"),
+    otp: isSucceed ? Yup.string().required("Otp is required check your email") : Yup.string(),
   });
 
   const defaultValues = {
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "demo@htech-cloud.com",
-    password: "demo1234"
+    password: "demo1234",
+    password_confirmation: "demo1234",
+    otp: "",
   }
   const methods = useForm({
     resolver: yupResolver(RegisterSchema),
@@ -43,12 +49,27 @@ const LoginForm = () => {
   const onSubmit = async (data) => {
     try {
       // submit data to server api
-      console.log("registration form submitted", data);
-      setTimeout(() => {
-        navigate("/auth/login");
-      }, 3500);
+      if (data.otp === "") {
 
-      reset();
+        console.log("registration form submitted", data);
+      }
+
+      //TODO:  if registration success set isSucceed to true then submit the otp with email
+      setIsSucceed(true);
+      if (data.otp !== "") {
+        const {email, otp } = data;
+        console.log({email, otp});
+      }
+      // setOtpIsSucceed(true);
+      // TODO: If is otp succeed then redirect to landing page
+
+      if (isOtpSucceed) {
+        setTimeout(() => {
+          navigate("/auth/login");
+          reset();
+        }, 3500);
+      }
+
 
     } catch (error) {
       console.log(error);
@@ -65,32 +86,57 @@ const LoginForm = () => {
       <Stack spacing={3}>
         {!!errors.afterSubmit && <Alert security="error">{errors.afterSubmit.message}</Alert>}
         {isSubmitting && <Alert security="info">{"form is submitting ..."}</Alert>}
-        {isSubmitSuccessful && <Alert security="success">{"Registration successfully please log in now"}</Alert>}
+        {isSubmitSuccessful &&
+          <Alert security="success">
+            {isSucceed ?  "check your email and provide the otp code" : "form submitted successfully" }
+          </Alert>}
 
-        <Stack direction={{ xs: "column", sm: "row"}} spacing={2}>
-          <RHFTextField name={"firstName"} label={"First Name"} />
-          <RHFTextField name={"lastName"} label={"Last Name"} />
-        </Stack>
+        {!isSucceed &&
+          <Stack direction={{ xs: "column", sm: "row"}} spacing={2}>
+            <RHFTextField name={"first_name"} label={"First Name"} />
+            <RHFTextField name={"last_name"} label={"Last Name"} />
+          </Stack>
+        }
 
         <RHFTextField name={"email"} label="Email address"/>
-        <RHFTextField
-          name={"password"}
-          label="Password"
-          type={showPassword ? 'text' : "password"}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position={"end"}>
-                <IconButton onClick={() => setShowPassword((prev) => !prev)}>
-                  {showPassword ? <Eye/> : <EyeSlash/>}
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-        />
+        {!isSucceed ?
+          <>
+          <RHFTextField
+            name={"password"}
+            label="Password"
+            type={showPassword ? 'text' : "password"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position={"end"}>
+                  <IconButton onClick={() => setShowPassword((prev) => !prev)}>
+                    {showPassword ? <Eye/> : <EyeSlash/>}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+          <RHFTextField
+            name={"password_confirmation"}
+            label="Confirm Password"
+            type={showPassword ? 'text' : "password"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position={"end"}>
+                  <IconButton onClick={() => setShowPassword((prev) => !prev)}>
+                    {showPassword ? <Eye/> : <EyeSlash/>}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+          </> :
+          <RHFTextField name={"otp"} label="Provide the email code confirmation"/>
+        }
+
       </Stack>
       <Button
         fullWidth
-        color={"inherit"}
+        color="inherit"
         size={"large"}
         type={"submit"}
         variant={"contained"}

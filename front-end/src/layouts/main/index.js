@@ -1,12 +1,12 @@
 import React from "react";
 import {Navigate, Outlet} from "react-router-dom";
 import {Container} from "@mui/material";
+import {useSelector} from "react-redux";
 
-const isAuthenticated = true;
 
 const MainLayout = () => {
-
-  if (isAuthenticated){
+  const {isLoggedIn} = useSelector(store => store.auth);
+  if (isLoggedIn){
     return <Navigate to={"/app"}/>
   }
   return (

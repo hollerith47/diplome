@@ -9,7 +9,7 @@ import useResponsive from "../hooks/useResponsive";
 
 const LandingPage = () => {
   const isDesktop = useResponsive("up", "md");
-  console.log(isDesktop)
+  // console.log(isDesktop)
 
   return (
     <Container sx={{mt:4, width: "100vw", maxHeight: "100vh", overflow: "hidden"}} >

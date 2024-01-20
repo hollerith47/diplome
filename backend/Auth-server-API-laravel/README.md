@@ -69,10 +69,37 @@ php artisan make:controller Auth/ForgetPasswordController
 ForgotPasswordController will send the reset email then the
 ResetPasswordController will reset the password (update the user password)
 
-**Image manipulation with php**
-https://image.intervention.io/v3
-
-Installation
-```php
-composer require intervention/image
+## Voici quelques commandes utiles :
+1. Mise à jour du cache des routes :
+   Utilisez la commande suivante pour effacer et réexécuter la mise en cache des routes :
+```bash
+php artisan route:cache
+```
+2. Mise à jour du cache des configurations :
+   Pour effacer le cache des configurations, utilisez la commande suivante
+```bash
+php artisan config:cache
+```
+3. Effacer le cache des vues :
+   Utilisez la commande suivante pour effacer le cache des vues compilées :
+```bash
+php artisan view:clear
+```
+Si votre application utilise la mise en cache des vues, vous pouvez également utiliser la commande suivante pour la mettre à jour :
+```bash
+php artisan view:cache
+```
+4. Mise à jour du cache de l'application entière :
+   Vous pouvez utiliser la commande suivante pour effacer tous les caches de votre application :
+```bash
+php artisan cache:clear
+```
+5. Mise à jour du cache des classes :
+   Laravel utilise également un cache des classes pour améliorer les performances. Pour effacer ce cache, utilisez la commande :
+```bash
+php artisan clear-compiled
+```
+Après avoir effacé le cache des classes, vous pouvez le reconstruire en utilisant la commande :
+```bash
+php artisan optimize
 ```

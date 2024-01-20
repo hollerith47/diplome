@@ -21,6 +21,8 @@ yarn-error.log
 /backend/auth-server-nextjs/*.env
 /backend/auth-server-nextjs/public/build
 *.pdf
+*.doc
+*.docx
 
 *.env
 !.env.example
