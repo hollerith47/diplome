@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 
-import DialogContainer from "../../components/DialogContainer";
+import DialogContainer from "../../components/dialog/DialogContainer";
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import FormProvider, {RHFTextField} from "../../components/hook-form";

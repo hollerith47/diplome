@@ -5,7 +5,7 @@ import {ArrowLeft} from "phosphor-react";
 import {useTheme} from "@mui/material/styles";
 import {useDispatch} from "react-redux";
 import {faker} from "@faker-js/faker";
-import {SHARED_DOCS, SHARED_LINKS} from "../../data";
+import {SHARED_DOCS, SHARED_LINKS} from "../../_data";
 import {DocMsg, LinkMsg} from "../Conversion/MsgTypes";
 
 const SharedMessages = () => {

@@ -1,6 +1,16 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {confirmEmailThunk, logInThunk, logOutThunk, signUpThunk} from "../thunks/authThunks";
+import {
+    confirmEmailThunk, createEventThunk,
+    forgotPasswordThunk, getAllUsersThunk,
+    logInThunk,
+    logOutThunk,
+    resetPasswordThunk,
+    signUpThunk
+} from "../thunks/authThunks";
 import {toast} from "react-toastify";
+import {confirmEmailBuilder, forgotPasswordBuilder, loginBuilder, logoutBuilder, registerBuilder} from "../builders";
+import resetUserPasswordBuilder from "../builders/resetUserPasswordBuilder";
+
 
 const initialState = {
     isLoggedIn: false,
@@ -10,6 +20,10 @@ const initialState = {
     loginToast: null,
     logoutToast: null,
     registerToast: null,
+    confirmEmailToast: null,
+    forgotPasswordToast: null,
+    resetPasswordToast: null,
+    allUsers: null,
 }
 
 export const loginUser = createAsyncThunk(
@@ -33,6 +47,20 @@ export const registerUser = createAsyncThunk(
     }
 )
 
+export const forgotPassword = createAsyncThunk(
+    "user/forgot-password",
+    async (data, thunkAPI) => {
+        return forgotPasswordThunk(data, thunkAPI);
+    }
+)
+
+export const resetUserPassword = createAsyncThunk(
+    "user/reset-password",
+    async (data, thunkAPI) => {
+        return resetPasswordThunk(data, thunkAPI);
+    }
+)
+
 export const confirmEmail = createAsyncThunk(
     "user/confirm-email",
     async (data, thunkAPI) => {
@@ -40,78 +68,59 @@ export const confirmEmail = createAsyncThunk(
     }
 )
 
+export const createEvent = createAsyncThunk(
+    "event/create",
+    async (_, thunkAPI) => {
+        return createEventThunk(_, thunkAPI);
+    }
+)
+
+export const getUsers = createAsyncThunk(
+    "users/getUsers",
+    async (_, thunkAPI) => {
+        return getAllUsersThunk(_, thunkAPI);
+    }
+)
 
 const slice = createSlice({
     name: "auth",
     initialState,
     reducers: {},
     extraReducers: builder => {
+        loginBuilder(builder);
+        logoutBuilder(builder);
+        registerBuilder(builder);
+        confirmEmailBuilder(builder);
+        forgotPasswordBuilder(builder);
+        resetUserPasswordBuilder(builder);
         builder
-            .addCase(loginUser.pending, state => {
-                state.isLoading = true;
-                state.isLoggedIn = false;
-                state.loginToast = toast.loading("Logging in...");
-            })
-            .addCase(loginUser.fulfilled, (state, { payload }) => {
-                state.isLoading = false;
-                state.isLoggedIn = true;
-                state.token = payload.token;
-                state.user = payload.user;
-                toast.update(state.loginToast, { render: "Login successful", isLoading: false, type: "success" });
-                setTimeout(()=> { toast.dismiss()},2000);
-            })
-            .addCase(loginUser.rejected, state => {
-                state.isLoading = false;
-                state.isLoggedIn = false;
-                toast.update(state.loginToast, { render: "Login failed", isLoading: false, type: "error" });
-                setTimeout(()=> { toast.dismiss()},3000);
-            })
-            .addCase(logoutUser.pending, state => {
-                state.isLoading = true;
-                state.isLoggedIn = true;
-                state.logoutToast = toast.loading("Logging in...");
-            })
-            .addCase(logoutUser.fulfilled, state => {
-                state.isLoading = false;
-                state.isLoggedIn = false;
-                state.token = "";
-                state.user = null;
-                toast.update(state.logoutToast, {render: "Logout successful", isLoading: false, type: "success"});
-                setTimeout(()=> { toast.dismiss()},2000);
-            })
-            .addCase(logoutUser.rejected, state => {
-                state.isLoading = true;
-                state.isLoggedIn = true;
-                toast.update(state.logoutToast, {render: "Logout failed", isLoading: false, type: "error"});
-                setTimeout(()=> { toast.dismiss()},2000);
-            })
-            .addCase(registerUser.pending, state => {
+            .addCase(createEvent.pending, state => {
                 state.isLoading = true;
             })
-            .addCase(registerUser.fulfilled, (state, {payload} )=> {
+            .addCase(createEvent.fulfilled, (state, {payload}) => {
                 state.isLoading = false;
-                state.token = payload.token;
+                toast.success(payload.message);
+                console.log({payload})
+            })
+            .addCase(createEvent.rejected, state => {
+                state.isLoading = false;
+                toast.error("Failed to create event");
+                console.log("create Event rejected")
+            });
+        builder
+            .addCase(getUsers.pending, state => {
+                state.isLoading = true;
+            })
+            .addCase(getUsers.fulfilled, (state, {payload})=> {
+                state.isLoading = false;
+                state.allUsers = payload;
+            })
+            .addCase(getUsers.rejected, state =>{
+                state.isLoading = false;
+                state.allUsers = null;
+                console.log("get all users rejected")
+            })
 
-                console.log(payload)
-            })
-            .addCase(registerUser.rejected, (state, {payload} )=> {
-                state.isLoading = false;
-                state.token = "";
-                console.log(payload)
-            })
-            .addCase(confirmEmail.pending, state => {
-                state.isLoading = true;
-            })
-            .addCase(confirmEmail.fulfilled, (state, {payload} )=> {
-                state.isLoading = false;
-                state.token = "";
-                console.log(payload)
-            })
-            .addCase(confirmEmail.rejected, (state, {payload} )=> {
-                state.isLoading = false;
-                state.token = "";
-                console.log(payload)
-            })
     }
 })
 

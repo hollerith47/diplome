@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
-import { IconButton, Link, Stack, Typography} from "@mui/material";
+import {Grid, Link, Stack, Typography} from "@mui/material";
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
 
 import img_left from "../../assets/Images/login_left_img.png";
-import {X} from "phosphor-react";
 import LoginForm from "../../sections/auth/LoginForm";
 import useResponsive from "../../hooks/useResponsive";
-import DialogContainer from "../../components/DialogContainer";
+import DialogContainer from "../../components/dialog/DialogContainer";
 import CLoseDialogIcon from "../../components/CLoseDialogIcon";
 
 const Login = () => {

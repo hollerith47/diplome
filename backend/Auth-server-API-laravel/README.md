@@ -103,3 +103,22 @@ Après avoir effacé le cache des classes, vous pouvez le reconstruire en utilis
 ```bash
 php artisan optimize
 ```
+
+Install websocket in laravel 10
+```bash
+composer require beyondcode/laravel-websockets -w
+```
+if not working
+1. Effacer le cache de Composer :
+```bash
+composer clearcache
+```
+2. Réinitialiser les permissions des fichiers 
+```bash
+git config --global --add safe.directory 'C:/{chemin_vers_votre_projet_laravel}/vendor/psr/http-message'
+# -- Assurez-vous de remplacer le chemin par le chemin réel de votre projet Laravel.
+```
+3. and reinstall websocket
+```bash
+composer require beyondcode/laravel-websockets -w
+```

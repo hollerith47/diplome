@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProfileUpdateRequest extends FormRequest
@@ -17,20 +18,20 @@ class ProfileUpdateRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'string', 'max:60'],
-            'last_name' => ['required', 'string', 'max:60'],
-            'email' => 'required|unique:users,email,'.$this->user()->id,
-            'phone' => 'sometimes|digits_between:8,20|unique:users,phone, '.$this->user()->id,
+            'first_name' => ['string', 'max:60'],
+            'last_name' => ['string', 'max:60'],
+            'email' => 'sometimes|unique:users,email,'.$this->user()->id,
+            'phone' => 'sometimes|string|min:8|max:20|unique:users,phone, '.$this->user()->id,
             'status' => ['sometimes', 'string'],
             'about' => ['sometimes', 'string'],
             'gender' => ['sometimes', 'string', "max:60"],
             'birth_date' => 'sometimes|date_format:Y-m-d',
-            'image' => ['image', 'mimes:jpg,png,jpeg,webp', 'max:2048']
+            'image' => ['sometimes','file','image', 'mimes:jpg,png,jpeg,webp', 'max:2048']
         ];
     }
 }

@@ -13,7 +13,7 @@ const Conversion = () => {
       <Header />
       {/*messages*/}
       <Box width={"100%"} sx={{flexGrow: 1, height: "100%", overflowY: "scroll"}}>
-        <Message showMessageOptions={true} />
+        <Message showMessageOptions />
       </Box>
       {/*chat footer*/}
       <Footer />

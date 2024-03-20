@@ -1,6 +1,6 @@
 import React from 'react';
 import {Box, Stack} from "@mui/material";
-import {Chat_History} from "../../data";
+import {Chat_History} from "../../_data";
 import {DocMsg, ImgMsg, LinkMsg, ReplyMsg, TextMsg, Timeline} from "./MsgTypes";
 
 const Message = ({showMessageOptions}) => {

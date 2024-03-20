@@ -3,7 +3,7 @@ import {Box, Divider, IconButton, Link, Stack, Typography} from "@mui/material";
 import {Search, SearchIconWrapper, StyledInputBase} from "../../components/Search";
 import {MagnifyingGlass, Plus} from "phosphor-react";
 import {useTheme} from "@mui/material/styles";
-import {ChatList} from "../../data";
+import {ChatList} from "../../_data";
 import {SimpleBarStyle} from "../../components/Scrollbar";
 import {ChatElement} from "../../components/ChatElements";
 import CreateGroupDialog from "../../sections/main/CreateGroupDialog";

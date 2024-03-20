@@ -18,8 +18,8 @@ class RegisterAuthController extends Controller
     {
         $newUser = $request->validated();
         $newUser['password'] = Hash::make($newUser['password']);
-        $newUser['role'] = 'user';
         $newUser['status'] = 'active';
+        $newUser['role'] = 'user';
         $user = User::create($newUser);
         $success['token'] = $user->createToken("user", ['app:all'])->plainTextToken;
         $success['name'] = $user->first_name;

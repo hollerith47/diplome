@@ -65,7 +65,7 @@ const ChatInput = ({setOpenPicker}) => {
                 </Tooltip>
               ))}
             </Stack>
-            <InputAdornment position={" "}>
+            <InputAdornment  position={"end"}>
               <IconButton onClick={()=> setOpenActions((prev)=> !prev)}>
                 <LinkSimple/>
               </IconButton>

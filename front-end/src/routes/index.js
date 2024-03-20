@@ -26,7 +26,6 @@ export default function Router() {
         {path: "login", index: true, element: <LoginPage /> },
         {path: "register", element: <RegisterPage /> },
         {path: "reset-password", element: <ResetPasswordPage /> },
-        {path: "new-password", element: <NewPasswordPage /> },
       ]
     },
     {
@@ -39,6 +38,9 @@ export default function Router() {
         { path: "group", element: <GroupPage /> },
         { path: "call", element: <CallPage /> },
         { path: "profile", element: <ProfilePage /> },
+        { path: "intro", element: <Intro /> },
+        { path: "join-room", element: <Join /> },
+        { path: "room", element: <Room /> },
 
         { path: "404", element: <Page404 /> },
         { path: "*", element: <Navigate to="/404" replace /> },
@@ -56,7 +58,6 @@ const LandingPage = Loadable(lazy(() => import("../pages/LandingPage")));
 const LoginPage = Loadable(lazy(() => import("../pages/auth/Login")));
 const RegisterPage = Loadable(lazy(() => import("../pages/auth/Register")));
 const ResetPasswordPage = Loadable(lazy(() => import("../pages/auth/ResetPassword")));
-const NewPasswordPage = Loadable(lazy(() => import("../pages/auth/NewPassword")));
 
 
 const Page404 = Loadable(lazy(() => import("../pages/Page404")));
@@ -64,3 +65,6 @@ const Settings = Loadable(lazy(() => import("../pages/dashboard/Settings")));
 const GroupPage = Loadable(lazy(() => import("../pages/dashboard/Group")));
 const CallPage = Loadable(lazy(() => import("../pages/dashboard/Call")));
 const ProfilePage = Loadable(lazy(() => import("../pages/dashboard/Profile")));
+const Intro = Loadable(lazy(() => import("../pages/dashboard/Intro")));
+const Join = Loadable(lazy(() => import("../pages/dashboard/Join")));
+const Room = Loadable(lazy(() => import("../pages/dashboard/Room")));

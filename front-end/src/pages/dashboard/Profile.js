@@ -4,9 +4,11 @@ import {CaretLeft} from "phosphor-react";
 import {faker} from "@faker-js/faker";
 import {useTheme} from "@mui/material/styles";
 import ProfileForm from "../../sections/settings/ProfileForm";
+import {useNavigate} from "react-router-dom";
 
 const Profile = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   return (
     <>
       <Stack direction="row" sx={{width: "100%", height: "100%"}}>
@@ -24,7 +26,7 @@ const Profile = () => {
           <Stack p={3} spacing={4}>
             {/*Header */}
             <Stack direction={"row"} spacing={3} alignItems={"center"}>
-              <IconButton>
+              <IconButton onClick={() => navigate("/app")}>
                 <CaretLeft size={24} color={"#4b4b4b"}/>
               </IconButton>
               <Typography variant={"h5"}>Profile</Typography>

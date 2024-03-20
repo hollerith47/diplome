@@ -6,10 +6,14 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Carbon;
 
 class LoginNotification extends Notification
 {
     use Queueable;
+    public string $loginTime;
+    public mixed $ipAddress;
+
     public String $message;
     public String $subject;
     public String $fromEmail;
@@ -18,11 +22,12 @@ class LoginNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct($ipAddress = null)
     {
-        $this->message = "You have been logged in";
-        $this->subject = "New Logging in";
-        $this->fromEmail = config("MAIL_FROM_ADDRESS", 'info@cecfrance.com');
+        $this->loginTime = Carbon::now()->toDateTimeString();
+        $this->ipAddress = $ipAddress;
+        $this->subject = "Successful Login Notification";
+        $this->fromEmail = config("MAIL_FROM_ADDRESS", 'dev@htech-cloud.com');
         $this->mailer = config("MAIL_MAILER", "smtp");
     }
 
@@ -41,11 +46,21 @@ class LoginNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        $message = (new MailMessage)
             ->mailer($this->mailer)
             ->subject($this->subject)
-            ->greeting("Hello ".$notifiable->first_name)
-            ->line($this->message);
+            ->greeting("Hello " . $notifiable->first_name . ",")
+            ->line("This is a notification to inform you that your account was successfully logged into.")
+            ->line("Login time: " . $this->loginTime);
+
+        // Optionally add the IP address if available
+        if ($this->ipAddress) {
+            $message->line("IP Address: " . $this->ipAddress);
+        }
+
+        $message->line("If this was you, you can safely ignore this email. If you suspect an unauthorized login, please change your password immediately and contact support.");
+
+        return $message;
     }
 
     /**

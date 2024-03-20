@@ -11,10 +11,11 @@ use Illuminate\Notifications\Notification;
 class ResetPasswordVerificationNotification extends Notification
 {
     use Queueable;
-    public String $message;
-    public String $subject;
-    public String $fromEmail;
-    public String $mailer;
+
+    public string $message;
+    public string $subject;
+    public string $fromEmail;
+    public string $mailer;
     public Otp $otp;
 
     /**
@@ -44,13 +45,18 @@ class ResetPasswordVerificationNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $otp = $this->otp->generate($notifiable->email,"numeric",6,10);
+        $otp = $this->otp->generate($notifiable->email, "numeric", 6, 10);
+        $resetUrl = env('FRONTEND_URL') . '/reset-password';
         return (new MailMessage)
             ->mailer($this->mailer)
             ->subject($this->subject)
-            ->greeting("Hello ".$notifiable->first_name)
+            ->greeting("Hello " . $notifiable->first_name . ",")
             ->line($this->message)
-            ->line("code: ". $otp->token);
+            ->line("Your Reset Code: " . $otp->token)
+            ->line("This code will expire in 10 minutes. Please use it promptly to reset your password.")
+            ->action('Reset Password', $resetUrl)
+            ->line("If you did not request a password reset, no further action is required. However, you may want to secure your account if this was unexpected.")
+            ->line("Thank you for using our platform. We're committed to ensuring the security of your account.");
     }
 
     /**

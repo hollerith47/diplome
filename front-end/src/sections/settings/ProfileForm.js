@@ -5,19 +5,22 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import {useForm} from "react-hook-form";
 import FormProvider, {RHFTextField} from "../../components/hook-form";
 import {Alert, Button, Stack} from "@mui/material";
+import {useSelector} from "react-redux";
 
 const ProfileForm = () => {
   const theme = useTheme();
+  const { user } = useSelector(store => store.auth);
+  const [isFile, setIsFile] = React.useState(false);
 
   const ProfileSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     about: Yup.string().required("About is required"),
-    avatarUrl: Yup.string().required("Avatar is required").nullable(true),
+    avatarUrl: isFile ? Yup.string().required("Avatar is required").nullable() : Yup.string(),
   })
 
   const defaultValues = {
-    name: "",
-    about: "",
+    name: user?.first_name + " " + user?.last_name,
+    about: user?.about,
   }
 
   const methods = useForm({
@@ -44,6 +47,7 @@ const ProfileForm = () => {
     })
 
     if (file){
+        setIsFile(true)
       setValue("avatarUrl", newFile, {shouldValidate: true})
     }
 
@@ -51,7 +55,7 @@ const ProfileForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      // TODO : submit data to backend server
+      // TODO : submit _data to backend server
       console.log("Profile Info", data)
 
     } catch (error) {
@@ -69,7 +73,7 @@ const ProfileForm = () => {
         {isSubmitting && <Alert security="info">{"form is submitting ..."}</Alert>}
         {isSubmitSuccessful && <Alert security="success">{"form submitted successfully"}</Alert>}
         <RHFTextField name={"name"} label={"Name"} helperText={"This name is visible to your contacts"}/>
-        <RHFTextField multiline name={"about"} rows={3} maxRows={5} label={"About"} />
+        <RHFTextField multiline name={"about"} minRows={3} maxRows={5} label={"About"} />
         <Stack spacing={2} direction={"row"} alignItems={"center"} justifyContent={"end"}>
           <Button color={"primary"} size={"large"} type={"submit"} variant={"outlined"}>
             Save

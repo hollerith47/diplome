@@ -2,21 +2,23 @@ import React, {useState} from 'react';
 import * as Yup from 'yup';
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
-
-import FormProvider, {RHFTextField} from "../../components/hook-form";
 import {Alert, Button, IconButton, InputAdornment, Stack} from "@mui/material";
 import {Eye, EyeSlash} from "phosphor-react";
 import {useTheme} from "@mui/material/styles";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {confirmEmail, loginUser, registerUser} from "../../redux/slices/authSlice";
-import SubmittingLoader from "../../components/SubmittingLoader";
 
-const LoginForm = () => {
+import {confirmEmail, registerUser} from "../../redux/slices/authSlice";
+import SubmittingLoader from "../../components/SubmittingLoader";
+import FormProvider, {RHFTextField} from "../../components/hook-form";
+import RHFOtpCodes from "../../components/hook-form/RHFOtpCodes";
+
+const RegisterForm = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const { isLoading } = useSelector(store => store.auth);
+    const {isLoading} = useSelector(store => store.auth);
     const [isSucceed, setIsSucceed] = useState(false);
+    const inputs = ["code1", "code2", "code3", "code4", "code5", "code6"];
     const [isOtpSucceed, setOtpIsSucceed] = useState(false);
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
@@ -27,20 +29,30 @@ const LoginForm = () => {
             .required("Email is required")
             .email("Email must be a valid email address"),
         password: Yup.string().required("Password is required"),
-        password_confirmation: Yup.string().required("Password is required"),
-        otp: isSucceed ? Yup.string().required("Otp is required check your email") : Yup.string(),
+        password_confirmation: Yup.string()
+            .required('Confirm password is required')
+            .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    });
+
+    const registerSchema_with_otp = Yup.object().shape({
+        email: Yup.string().required("Email is required").email("Email must be a valid email address"),
+        code1: Yup.string().required("OTP is required"),
+        code2: Yup.string().required("OTP is required"),
+        code3: Yup.string().required("OTP is required"),
+        code4: Yup.string().required("OTP is required"),
+        code5: Yup.string().required("OTP is required"),
+        code6: Yup.string().required("OTP is required"),
     });
 
     const defaultValues = {
         first_name: "",
         last_name: "",
         email: "demo@htech-cloud.com",
-        password: "demo1234",
-        password_confirmation: "demo1234",
-        otp: "",
+        password: "demo12345",
+        password_confirmation: "demo12345"
     }
     const methods = useForm({
-        resolver: yupResolver(RegisterSchema),
+        resolver: yupResolver(isSucceed ? registerSchema_with_otp : RegisterSchema),
         defaultValues,
     });
 
@@ -53,22 +65,15 @@ const LoginForm = () => {
 
     const onSubmit = async (data) => {
         try {
-            // submit data to server api
-            if (data.otp === "") {
-                const response = await dispatch(registerUser(data));
-                // console.log("registration form submitted", data);
-                if (response.type === "user/register/fulfilled") {
-                    setIsSucceed(true);
-                }
-            }
-            //TODO:  if registration success set isSucceed to true then submit the otp with email
-            if (data.otp !== "") {
-                const {email, otp} = data;
+            // submit _data to server api
+            console.log(data)
+            if (isSucceed) {
+                const codeOtp = data.code1 + "" + data.code2 + "" + data.code3 + "" + data.code4 + "" + data.code5 + "" + data.code6;
+                const {email} = data;
                 const confirmationData = {
-                    email,
-                    otp
+                    email: email,
+                    otp: codeOtp
                 }
-                console.log({email, otp});
                 setOtpIsSucceed(true)
                 const confirmResponse = await dispatch(confirmEmail(confirmationData))
                 if (confirmResponse.type === "user/confirm-email/fulfilled") {
@@ -76,6 +81,11 @@ const LoginForm = () => {
                         navigate("/auth/login");
                         reset();
                     }, 2000);
+                }
+            } else {
+                const response = await dispatch(registerUser(data));
+                if (response.type === "user/register/fulfilled") {
+                    setIsSucceed(true);
                 }
             }
         } catch (error) {
@@ -91,8 +101,8 @@ const LoginForm = () => {
     return (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={3}>
-                {!!errors.afterSubmit && <Alert security="error">{errors.afterSubmit.message}</Alert>}
-                {isSubmitting && <SubmittingLoader />}
+                {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
+                {isSubmitting && <SubmittingLoader/>}
                 {!isOtpSucceed &&
                     isSubmitSuccessful &&
                     <Alert security="success">
@@ -139,16 +149,17 @@ const LoginForm = () => {
                             }}
                         />
                     </> :
-                    <RHFTextField name={"otp"} label="Provide the email code confirmation"/>
+                    // <RHFTextField name={"otp"} label="Provide the email code confirmation"/>
+                    <RHFOtpCodes keyName={"code"} inputs={inputs}/>
                 }
-
             </Stack>
             <Button
                 fullWidth
                 color="inherit"
-                size={"large"}
+                size="large"
                 type={"submit"}
-                variant={"contained"}
+                variant="contained"
+                disabled={isLoading}
                 sx={{
                     mt: 5,
                     backgroundColor: theme.palette.primary.main,
@@ -159,10 +170,10 @@ const LoginForm = () => {
                     }
                 }}
             >
-                {isSucceed ? "Confirm Email" : "Create Account" }
+                {isSucceed ? "Confirm Email" : "Create Account"}
             < /Button>
         </FormProvider>
     );
 };
 
-export default LoginForm;
+export default RegisterForm;

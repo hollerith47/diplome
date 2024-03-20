@@ -1,7 +1,7 @@
 import React from 'react';
 import {Avatar, Box, Divider, IconButton, Menu, MenuItem, Stack} from "@mui/material";
 import Logo from "../../assets/Images/logo.ico";
-import {Nav_Buttons, Profile_Menu} from "../../data";
+import {Nav_Buttons, Profile_Menu} from "../../_data";
 import {Gear} from "phosphor-react";
 import AntSwitch from "../../components/AntSwitch";
 import {useDispatch, useSelector} from "react-redux";
@@ -22,6 +22,8 @@ const getPath = (index) => {
             return "/call";
         case 3:
             return "/settings";
+        case 4:
+            return "/intro";
         default:
             break;
     }
@@ -34,8 +36,9 @@ const getMenuPath = (index) => {
         case 1:
             return "/settings";
         case 2:
-            // TODO: Logout implementation
             return "/auth/login";
+        case 4:
+            return "/intro";
         default:
             break;
     }
@@ -55,6 +58,8 @@ const SideBar = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const {sidebar} = useSelector((store) => store.app);
+    const {user} = useSelector((store) => store.auth);
+
     const linkIndex = sidebar.linkSelected;
     // console.log(linkIndex, "selected link index")
 
@@ -158,7 +163,7 @@ const SideBar = () => {
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                             onClick={handleClick}
-                            src={faker.image.avatar()}
+                            src={user.image}
                         />
                         <Menu
                             id="basic-menu"

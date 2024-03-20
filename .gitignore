@@ -20,9 +20,17 @@ yarn-error.log
 /backend/auth-server-nextjs/node_modules
 /backend/auth-server-nextjs/*.env
 /backend/auth-server-nextjs/public/build
+
+/backend/messaging-express-js/node_modules
+/backend/messaging-express-js/*.env
+/backend/messaging-express-js/public/build
 *.pdf
 *.doc
 *.docx
+*.xls
+*.pptx
+
+*/*/node_modules
 
 *.env
 !.env.example

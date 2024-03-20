@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateUserByAdminRequest;
 use App\Http\Requests\Auth\ProfileUpdateRequest;
+use App\Models\User;
 use App\Traits\HttpResponses;
 use App\Traits\ImageProcessing;
 use Illuminate\Http\Request;
@@ -14,6 +16,7 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): \Illuminate\Http\JsonResponse
     {
         $user = $request->user();
+//        logger()->info($request->file("image"));
         $validatedData = $request->validated();
 
         if ($request->hasFile("image")) {
@@ -41,6 +44,14 @@ class ProfileController extends Controller
                 "user"=> $request->user()
             ]
         ]);
+    }
+
+    public function updateUserByAdmin(UpdateUserByAdminRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $validatedData = $request->validated();
+        $user = User::findOrFail($request->id);
+        $user->update($validatedData);
+        return $this->success($user);
     }
 
 }

@@ -12,7 +12,6 @@ const GeneralApp = () => {
   const {sidebar} = useSelector((store) => store.app);
   // console.log(sidebar)
 
-
   return (
     <Stack direction="row" sx={{width: "100%", height: "100%"}}>
       {/*chat compenent*/}
@@ -45,9 +44,7 @@ const GeneralApp = () => {
             break;
         }
       })()
-
       }
-
     </Stack>
   );
 };

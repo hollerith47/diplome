@@ -11,20 +11,12 @@ use Ichtrojan\Otp\Otp;
 class EmailVerificationNotification extends Notification
 {
     use Queueable;
-    public String $message;
-    public String $subject;
-    public String $fromEmail;
-    public String $mailer;
     public Otp $otp;
     /**
      * Create a new notification instance.
      */
     public function __construct()
     {
-        $this->message = "Use the below code for verification processing";
-        $this->subject = "Verification needed";
-        $this->fromEmail = config("MAIL_FROM_ADDRESS", 'info@cecfrance.com');
-        $this->mailer = config("MAIL_MAILER", "smtp");
         $this->otp = new Otp;
     }
 
@@ -45,11 +37,14 @@ class EmailVerificationNotification extends Notification
     {
         $otp = $this->otp->generate($notifiable->email,"numeric",6,10);
         return (new MailMessage)
-            ->mailer($this->mailer)
-            ->subject($this->subject)
-            ->greeting("Hello ".$notifiable->first_name)
-            ->line($this->message)
-            ->line("code: ". $otp->token);
+            ->from(config("MAIL_FROM_ADDRESS", 'info@cecfrance.com'), config("MAIL_FROM_NAME", "Your Application Name"))
+            ->subject("Complete Your Email Verification")
+            ->greeting("Hello " . $notifiable->first_name . ",")
+            ->line("Thank you for signing up. To complete your registration, please verify your email address by entering the following verification code on the verification page.")
+            ->line("Your Verification Code: " . $otp->token)
+            ->line("This code is valid for 10 minutes and can be used only once.")
+            ->line("If you did not create an account, no further action is required.")
+            ->line("Thank you for using our application!");
     }
 
     /**

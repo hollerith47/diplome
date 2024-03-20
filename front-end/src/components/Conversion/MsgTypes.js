@@ -2,7 +2,7 @@ import React from 'react';
 import {Box, Divider, Stack, Typography, Link, IconButton, MenuItem, Menu} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {DotsThreeVertical, DownloadSimple, Image} from "phosphor-react";
-import {Message_options} from "../../data";
+import {Message_options} from "../../_data";
 
 
 

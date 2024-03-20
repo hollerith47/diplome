@@ -6,7 +6,7 @@ import {SimpleBarStyle} from "../../components/Scrollbar";
 import {useTheme} from "@mui/material/styles";
 import CreateCallDialog from "../../sections/main/CreateCallDialog";
 import CallLogElement from "../../components/CallLogElement";
-import {CALL_LOG} from "../../data";
+import {CALL_LOG} from "../../_data";
 
 const Call = () => {
   const theme = useTheme();
