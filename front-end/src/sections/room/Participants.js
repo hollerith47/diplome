@@ -1,26 +1,11 @@
 import {Box, Divider, Stack, Typography} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
+import {useSelector} from "react-redux";
 
-const LIST = [
-    {
-        id: 1,
-        identity: "Herman",
-    },
-    {
-        id: 2,
-        identity: "Makiese",
-    },
-    {
-        id: 3,
-        identity: "John Doe",
-    },
-    {
-        id: 4,
-        identity: "Herman",
-    },
-]
 const Participants = () => {
     const theme = useTheme();
+    const { participants } = useSelector(store => store.app)
+    console.log(participants)
     return (
         <Box sx={{
             p: 2,
@@ -39,7 +24,7 @@ const Participants = () => {
             }}>
                 <Typography variant="subtitle1" sx={{color: "text.secondary"}}>Participants Box</Typography>
                 <Stack>
-                    {LIST.map(({id, identity})=>(
+                    {participants?.map(({id, identity})=>(
                         <Stack key={id} spacing={0.5} justifyContent="center">
                             <Box sx={{
                                 px:3,

@@ -21,13 +21,17 @@ const CreateCallDialogHeader = () =>(
     </Stack>
 )
 
-const CreateCallDialogBody = () => (
-    <SimpleBarStyle timeout={500} clickOnTrack={false}>
-        {CALL_LOG.map((item)=>(
-            <CallLogElement isBordered={true} {...item} isDialogLog={true}/>
-        ))}
-    </SimpleBarStyle>
-)
+const CreateCallDialogBody = () => {
+    const appId = 510839379;
+    const server = "wss://webliveroom510839379-api.coolzcloud.com/ws";
+    return (
+        <SimpleBarStyle timeout={500} clickOnTrack={false}>
+            {CALL_LOG.map((item)=>(
+                <CallLogElement isBordered={true} {...item} isDialogLog={true}/>
+            ))}
+        </SimpleBarStyle>
+    )
+}
 
 const CreateCallDialog = ({open, handleClose}) => {
   return (

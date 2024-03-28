@@ -10,8 +10,11 @@ const initialState = {
     },
     identity: "",
     roomId: "",
+    chat_type: null,
     isRoomHost: false,
     connectionOnlyWithAudio: false,
+    showOverlay: true,
+    participants : [],
 }
 
 //actions
@@ -39,6 +42,24 @@ export function SetConnectionOnlyWithAudio(value) {
     }
 }
 
+export function SetOverlay(value) {
+    return async (dispatch) => {
+        dispatch(updateShowOverlay(value));
+    }
+}
+
+export function SetParticipants(value) {
+    return async (dispatch) => {
+        dispatch(updateParticipants(value));
+    }
+}
+
+export const SelectConversation = ({ room_id }) => {
+    return async (dispatch, getState) => {
+        dispatch(slice.actions.selectConversation({ room_id }));
+    };
+};
+
 const slice = createSlice({
     name: "app",
     initialState,
@@ -65,10 +86,20 @@ const slice = createSlice({
         updateConnectOnlyWithAudio(state, action) {
             state.connectionOnlyWithAudio = action.payload
         },
+        updateShowOverlay(state, action) {
+            state.showOverlay = action.payload
+        },
+        updateParticipants(state, action) {
+            state.participants = action.payload
+        },
+        selectConversation(state, action) {
+            state.chat_type = "individual";
+            state.room_id = action.payload.room_id;
+        },
     }
 });
 
-export const {ToggleSidebar, updateConnectOnlyWithAudio,updateRoomId, updateIdentity, updateIsRoomHost, UpdateSidebarLink, UpdateSidebarType} = slice.actions;
+export const {ToggleSidebar, updateParticipants, updateShowOverlay, updateConnectOnlyWithAudio,updateRoomId, updateIdentity, updateIsRoomHost, UpdateSidebarLink, UpdateSidebarType} = slice.actions;
 
 export default slice.reducer;
 

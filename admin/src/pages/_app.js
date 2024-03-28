@@ -10,6 +10,7 @@ import { createEmotionCache } from 'src/utils/create-emotion-cache';
 import 'simplebar-react/dist/simplebar.min.css';
 import { Provider as ReduxProvider } from 'react-redux';
 import { store } from '../redux/store';
+import 'reactflow/dist/style.css';
 
 const clientSideEmotionCache = createEmotionCache();
 

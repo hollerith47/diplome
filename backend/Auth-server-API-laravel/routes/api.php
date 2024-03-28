@@ -15,9 +15,7 @@ use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware(['auth:sanctum'])->get('/user', [UsersController::class, "show"]);
 
 // users auth
 Route::post("register", [RegisterAuthController::class, 'register']);

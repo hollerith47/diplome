@@ -1,11 +1,20 @@
 import {Stack} from "@mui/material";
-import MeetingContainer from "../../sections/meeting/MeetingContainer";
 import Label from "../../sections/room/Label";
 import Participants from "../../sections/room/Participants";
 import GroupChat from "../../sections/room/GroupChat";
 import Video from "../../sections/room/Video";
+import {useEffect} from "react";
+import * as webRTCHandler from "../../utils/webRTCHandler";
+import {useSelector} from "react-redux";
+import Overlay from "../../sections/room/Overlay";
 
 const Room = () => {
+    const {identity, isRoomHost, roomId, showOverlay} = useSelector(store=>store.app)
+
+    useEffect(() => {
+        webRTCHandler.getLocalPreviewAndInitRoomConnection(isRoomHost,identity, roomId)
+    }, []);
+
 
     return (
         <>
@@ -22,6 +31,7 @@ const Room = () => {
                 <GroupChat/>
                 {/*    Label*/}
                 <Label/>
+                {showOverlay && <Overlay />}
             </Stack>
         </>
     );

@@ -2,10 +2,18 @@ import React, {useEffect} from "react";
 import {Navigate, Outlet} from "react-router-dom";
 import {Box, Stack} from "@mui/material";
 import SideBar from "./SideBar";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {connectSocket, socket} from "../../socket";
+import {AddDirectConversation, UpdateDirectConversation} from "../../redux/slices/conversationSlice";
+import {SelectConversation} from "../../redux/slices/appSlice";
 
 const DashboardLayout = () => {
     const {isLoggedIn, token} = useSelector(store => store.auth);
+    const dispatch = useDispatch();
+    const { conversations, current_conversation } = useSelector(
+        (state) => state.conversation.direct_chat
+    );
+
     // const {id} = useSelector(store => store.auth.user);
 
     useEffect(() => {
@@ -15,16 +23,30 @@ const DashboardLayout = () => {
                 window.location.reload();
             }
         }
-        // S'abonner à un canal et écouter les événements
-        // echo.channel('testChannel')
-        //     .listen('Hello', (e) => {
-        //         console.log('Message reçu:', e);
-        //     });
 
-        // Se désabonner du canal lors du démontage du composant
-        // return () => {
-        //     echo.leave('testChannel');
-        // };
+        if (!socket){
+            connectSocket(token);
+        }
+
+        socket.on("start_chat", (data) => {
+            console.log(data);
+            // add / update to conversation list
+            const existing_conversation = conversations.find(
+                (el) => el?.id === data._id
+            );
+            if (existing_conversation) {
+                // update direct conversation
+                dispatch(UpdateDirectConversation({ conversation: data }));
+            } else {
+                // add direct conversation
+                dispatch(AddDirectConversation({ conversation: data }));
+            }
+            dispatch(SelectConversation({ room_id: data._id }));
+        });
+
+        return () =>{
+            socket?.off("start_chat")
+        }
 
     }, [isLoggedIn]);
 

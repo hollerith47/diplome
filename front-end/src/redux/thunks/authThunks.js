@@ -70,6 +70,7 @@ export const logOutThunk = async (_, thunkAPI) => {
         const token = state.auth.token;
         const axiosInstance = createAxiosInstance(token);
         await axiosInstance.get(`/logout`);
+        window.localStorage.removeItem("user_id");
         return true
     } catch (error) {
         console.error("Logout error", error);

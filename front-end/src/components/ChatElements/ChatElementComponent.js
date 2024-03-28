@@ -19,6 +19,9 @@ const ChatElementComponent = ({id, name, img, msg, time, unread, online}) => {
                 backgroundColor: theme.palette.mode === 'light'
                     ? '#fff'
                     : theme.palette.background.paper,
+                "&:hover": {
+                    cursor: "pointer"
+                }
             }}>
             <Stack
                 direction="row"

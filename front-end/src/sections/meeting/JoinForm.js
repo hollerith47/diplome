@@ -46,7 +46,7 @@ const JoinForm = () => {
         // TODO: set to the store that user is host
         dispatch(UpdateIsRoomHost(isRoomHost))
 
-    }, [search]);
+    }, [search, dispatch]);
     const onSubmit = async (data) => {
         try {
             await handleRoom(data);
@@ -71,8 +71,9 @@ const JoinForm = () => {
 
     const createRoom = (username) => {
         // navigate("/room")
-        console.log("createRoom")
-        console.log("username: " + username)
+        // console.log("createRoom");
+        // console.log("username: " + username);
+        navigate("/room");
     }
 
     const joinRoom = async (roomId, username) => {

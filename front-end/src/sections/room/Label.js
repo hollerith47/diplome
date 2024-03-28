@@ -1,9 +1,10 @@
 import {Box, Typography} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
+import {useSelector} from "react-redux";
 
 const Label = () => {
     const theme = useTheme();
-    const roomId = "123456";
+    const {roomId} = useSelector(store =>store.app);
     return (
         <Box sx={{
             position: "absolute",

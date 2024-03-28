@@ -36,7 +36,7 @@ class ProfileController extends Controller
     public function getProfile(Request $request): \Illuminate\Http\JsonResponse
     {
         $user = $request->user();
-        $user->image ? $user->image = $user->image_url: "";
+        $user->updateImageAttribute();
 
         return response()->json([
             "success" => true,

@@ -14,8 +14,15 @@ class UsersController extends Controller
     {
         $users = User::all();
         $users->each(function ($user){
-            $user->image ? $user->image = $user->image_url: "";
+            $user->updateImageAttribute();
         });
         return $this->success($users);
+    }
+
+    public function show(Request $request)
+    {
+        $user = $request->user();
+        $user->updateImageAttribute();
+        return response()->json($user);
     }
 }

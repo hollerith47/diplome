@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Button, Divider, IconButton, Stack, Typography} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {ArchiveBox, CircleDashed, MagnifyingGlass, Users} from "phosphor-react";
@@ -10,14 +10,18 @@ import {ChatElement} from "../../components/ChatElements";
 import {useDispatch, useSelector} from "react-redux";
 import {getUsers} from "../../redux/slices/authSlice";
 import ListUsersDialog from "../../sections/main/ListUsersDialog";
+import * as wss from "../../utils/wss";
 
 
+const user_id = window.localStorage.getItem("user_id");
 const Chats = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const isDesktop = useResponsive("up", "md");
 
-    const {allUsers} = useSelector(store => store.auth);
+    const { conversations } = useSelector(store => store.conversation.direct_chat);
+
+    const { allUsers } = useSelector(store => store.auth);
     const usersArray = allUsers;
 
     const [openDialog, setOpenDialog] = useState(false);
@@ -25,6 +29,12 @@ const Chats = () => {
     const handleCloseDialog = () => {
         setOpenDialog(false);
     }
+
+    useEffect(()=>{
+        wss.getDirectConversation(user_id, (data) => {
+            // data => list of conversation
+        })
+    }, [])
 
 
     return (
@@ -95,18 +105,18 @@ const Chats = () => {
                         sx={{flexGrow: 1, overflowX: "hidden", overflowY: "scroll", height: "100%"}}>
                         <SimpleBarStyle timeout={500} clickOnTrack={false}>
                             <Stack spacing={2.4}>
-                                <Typography variant="subtitle2" sx={{color: "#676767"}}>
-                                    Pinned
-                                </Typography>
-                                {ChatList.filter((item) => item.pinned).map((item) => {
-                                    return <ChatElement {...item}/>
-                                })}
+                                {/*<Typography variant="subtitle2" sx={{color: "#676767"}}>*/}
+                                {/*    Pinned*/}
+                                {/*</Typography>*/}
+                                {/*{ChatList.filter((item) => item.pinned).map((item) => {*/}
+                                {/*    return <ChatElement {...item}/>*/}
+                                {/*})}*/}
                             </Stack>
                             <Stack spacing={2.4}>
                                 <Typography variant="subtitle2" sx={{color: "#676767"}}>
                                     All Chats
                                 </Typography>
-                                {ChatList.filter((item) => !item.pinned).map((item) => {
+                                {conversations.filter((item) => !item.pinned).map((item) => {
                                     return <ChatElement {...item}/>
                                 })}
                             </Stack>

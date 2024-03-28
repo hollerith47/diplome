@@ -5,14 +5,19 @@ import 'react-toastify/dist/ReactToastify.css';
 import {Bounce, ToastContainer} from "react-toastify";
 
 // trying purpose only
-import {Button} from "@mui/material";
 import { CssBaseline } from "@mui/material"
-import {useDispatch} from "react-redux";
-import {createEvent} from "./redux/slices/authSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect} from "react";
+import {connectWithSocketServer} from "./utils/wss";
 
 function App() {
+    const { token } = useSelector(store => store.auth)
 
     const dispatch = useDispatch();
+
+    useEffect(()=>{
+        connectWithSocketServer(token);
+    }, [])
 
     return (
         <ThemeProvider>
