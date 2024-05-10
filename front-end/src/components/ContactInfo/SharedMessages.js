@@ -6,7 +6,7 @@ import {useTheme} from "@mui/material/styles";
 import {useDispatch} from "react-redux";
 import {faker} from "@faker-js/faker";
 import {SHARED_DOCS, SHARED_LINKS} from "../../_data";
-import {DocMsg, LinkMsg} from "../Conversion/MsgTypes";
+import {DocMsg, LinkMsg} from "../Conversation/MsgTypes";
 
 const SharedMessages = () => {
   const theme = useTheme();

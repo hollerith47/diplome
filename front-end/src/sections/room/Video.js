@@ -1,10 +1,17 @@
 import {Box, Stack} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {HangUpButton, MicrophoneButton, ShareScreenButton, VideoButton} from "../../components/room";
+import {useState} from "react";
+import LocalScreenSharingPreview from "./LocalScreenSharingPreview";
+import {useSelector} from "react-redux";
+
 
 
 const Video = () => {
     const theme = useTheme();
+    const [shareScreenEnabled, setShareScreenEnabled] = useState(false);
+    const [screenSharingStream, setScreenSharingStream] = useState(null);
+    const {connectionOnlyWithAudio} = useSelector(store => store.app)
 
     return (
         <Box sx={{
@@ -16,6 +23,7 @@ const Video = () => {
         >
             {/* video elements   */}
             {/* video controls   */}
+
             <Box sx={{
                 position: "absolute",
                 bottom: 20,
@@ -34,9 +42,15 @@ const Video = () => {
                 <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}
                        sx={{height: 1}}
                 >
+                    {shareScreenEnabled && <LocalScreenSharingPreview  stream={screenSharingStream} />}
                     <MicrophoneButton/>
-                    <VideoButton />
-                    <ShareScreenButton />
+                    {!connectionOnlyWithAudio && <VideoButton />}
+                    <ShareScreenButton
+                        shareScreenEnabled={shareScreenEnabled}
+                        setShareScreenEnabled={setShareScreenEnabled}
+                        screenSharingStream={screenSharingStream}
+                        setScreenSharingStream={setScreenSharingStream}
+                    />
                     <HangUpButton />
                 </Stack>
 

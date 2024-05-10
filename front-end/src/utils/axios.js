@@ -1,8 +1,8 @@
 import axios from "axios";
-import { BASE_API_URL } from "../config";
+import { BASE_BACKEND_URL } from "../config";
 
 const createAxiosInstance = (token) => {
-    const axiosInstance = axios.create({baseURL: BASE_API_URL});
+    const axiosInstance = axios.create({baseURL: BASE_BACKEND_URL});
 
     axiosInstance.interceptors.request.use(
         (config) => {

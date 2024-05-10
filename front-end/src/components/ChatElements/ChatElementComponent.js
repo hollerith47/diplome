@@ -5,7 +5,7 @@ import NameAndMessage from "./NameAndMessage";
 import AvatarWithOnline from "./AvatarWithOnline";
 import TimeAndUnread from "./TimeAndUnread";
 
-const ChatElementComponent = ({id, name, img, msg, time, unread, online}) => {
+const ChatElementComponent = ({id, name, img, msg, time, unread, online, current_conv}) => {
     const theme = useTheme();
 
     return (
@@ -32,7 +32,7 @@ const ChatElementComponent = ({id, name, img, msg, time, unread, online}) => {
                     direction="row"
                     spacing={2}
                 >
-                    <AvatarWithOnline online={online} />
+                    <AvatarWithOnline image={img} online={online} />
                     <Stack spacing={0.3}>
                         {/*  name and message*/}
                         <NameAndMessage name={name} message={msg} />

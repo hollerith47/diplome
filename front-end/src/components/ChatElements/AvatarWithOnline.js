@@ -33,7 +33,7 @@ const StyledBadge = styled(Badge)(({theme}) => ({
 }));
 
 
-const AvatarWithOnline = ({online}) => {
+const AvatarWithOnline = ({online, image}) => {
   return (
     <>
       {
@@ -43,7 +43,7 @@ const AvatarWithOnline = ({online}) => {
             anchorOrigin={{vertical: "bottom", horizontal: "right"}}
             variant="dot"
           >
-            <Avatar src={faker.image.avatar()}/>
+            <Avatar src={image}/>
           </StyledBadge>
           :
           <Avatar src={faker.image.avatar()}/>

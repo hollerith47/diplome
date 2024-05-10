@@ -1,52 +1,105 @@
-import React from "react";
+import React, {useState} from "react";
+import { useTheme } from "@mui/material/styles";
+import {Box, Button, IconButton, Stack, Typography} from "@mui/material";
+
+import { Link, useSearchParams } from "react-router-dom";
+import ChatComponent from "./Conversation";
 import Chats from "./Chats";
-import {Box, Stack} from "@mui/material";
-import Conversion from "../../components/Conversion";
-import {useTheme} from "@mui/material/styles";
-import {useSelector} from "react-redux";
-import {ContactInfo, StarredMessage} from "../../components/ContactInfo";
-import SharedMessages from "../../components/ContactInfo/SharedMessages";
+import Contact from "../../sections/dashboard/Contact";
+import NoChat from "../../assets/Illustration/NoChat";
+import { useSelector } from "react-redux";
+import StarredMessages from "../../sections/dashboard/StarredMessages";
+import Media from "../../sections/dashboard/SharedMessages";
+import ListUsersDialog from "../../sections/main/ListUsersDialog";
 
 const GeneralApp = () => {
-  const theme = useTheme();
-  const {sidebar} = useSelector((store) => store.app);
-  // console.log(sidebar)
+    const [searchParams] = useSearchParams();
 
-  return (
-    <Stack direction="row" sx={{width: "100%", height: "100%"}}>
-      {/*chat compenent*/}
-      <Chats/>
-      {/*conversation component*/}
-      <Box
-        sx={{
-          height: "100%",  // 100 sidebar + 320 chats + 320 contact info
-          width: sidebar.open ? "calc(100vw - 420px - 320px)" : "calc(100vw - 420px)",
-          backgroundColor: theme.palette.mode === "light"
-            ? "#F0F4FA"
-            : theme.palette.background
-        }}
-      >
-        {/* conversations */}
-        <Conversion/>
-      </Box>
-      {/*  contact Info*/}
-      {sidebar.open && (() => {
-        // console.log(sidebar)
-        switch (sidebar.type) {
-          case 'CONTACT':
-            //render contact component
-            return <ContactInfo />
-          case 'STARRED':
-            return <StarredMessage />
-          case "SHARED":
-            return <SharedMessages />;
-          default:
-            break;
-        }
-      })()
-      }
-    </Stack>
-  );
+    const theme = useTheme();
+    const {allUsers} = useSelector(store => store.auth);
+    const usersArray = allUsers;
+    console.log({usersArray})
+
+    const [openDialog, setOpenDialog] = useState(false);
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    }
+
+    const { sideBar, room_id, chat_type } = useSelector((state) => state.app);
+
+    return (
+        <>
+            <Stack direction="row" sx={{ width: "100%" }}>
+                <Chats />
+                <Box
+                    sx={{
+                        height: "100%",
+                        width: sideBar?.open
+                            ? `calc(100vw - 740px )`
+                            : "calc(100vw - 420px )",
+                        backgroundColor:
+                            theme.palette.mode === "light"
+                                ? "#FFF"
+                                : theme.palette.background.paper,
+                        borderBottom:
+                            searchParams.get("type") === "individual-chat" &&
+                            searchParams.get("id")
+                                ? "0px"
+                                : "6px solid #0162C4",
+                    }}
+                >
+                    {chat_type === "individual" &&
+                    room_id !== null ? (
+                        <ChatComponent />
+                    ) : (
+                        <Stack
+                            spacing={2}
+                            sx={{ height: "100vh", width: "100%" }}
+                            alignItems="center"
+                            justifyContent={"center"}
+                        >
+                            <NoChat />
+                            <Typography variant="subtitle2">
+                                Select a conversation or start a{" "}
+                                <Button
+                                    style={{
+                                        color: theme.palette.primary.main,
+                                        textDecoration: "none",
+                                    }}
+                                    onClick={() => setOpenDialog(true)}
+                                >
+                                    new one
+                                </Button>
+                            </Typography>
+                        </Stack>
+                    )}
+                </Box>
+                {sideBar?.open &&
+                    (() => {
+                        switch (sideBar.type) {
+                            case "CONTACT":
+                                return <Contact />;
+
+                            case "STARRED":
+                                return <StarredMessages />;
+
+                            case "SHARED":
+                                return <Media />;
+
+                            default:
+                                break;
+                        }
+                    })()}
+            </Stack>
+            {openDialog && allUsers &&
+                <ListUsersDialog
+                    open={openDialog}
+                    handleClose={handleCloseDialog}
+                    usersList={usersArray}
+                />
+            }
+        </>
+    );
 };
 
 export default GeneralApp;

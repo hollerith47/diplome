@@ -63,20 +63,20 @@ const JoinForm = () => {
 
         dispatch(SetIdentity(data.user_name))
         if (isRoomHost){
-            createRoom(data.user_name);
+            createRoom();
         }else{
-            await joinRoom(data.meeting_id, data.user_name);
+            await joinRoom(data.meeting_id);
         }
     }
 
-    const createRoom = (username) => {
+    const createRoom = () => {
         // navigate("/room")
         // console.log("createRoom");
         // console.log("username: " + username);
         navigate("/room");
     }
 
-    const joinRoom = async (roomId, username) => {
+    const joinRoom = async (roomId) => {
         const response = await getRoomExists(roomId);
         // console.log("joinRoom ID: " + roomId)
         // console.log("Username: " + username)
@@ -114,7 +114,7 @@ const JoinForm = () => {
                 }
                 <RHFTextField name="user_name" label="Enter your name"/>
                 <Stack direction="row" alignItems="center" spacing={0.5}>
-                    <Checkbox value={connectionOnlyWithAudio} onChange={(e)=> {
+                    <Checkbox checked={connectionOnlyWithAudio} onChange={(e)=> {
                         dispatch(SetConnectionOnlyWithAudio(e.target.checked))
                     }}/>
                     <Typography variant="subtitle2">Audio only</Typography>

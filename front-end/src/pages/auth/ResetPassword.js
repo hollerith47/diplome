@@ -3,7 +3,6 @@ import {IconButton, Link, Stack, Typography} from "@mui/material";
 import {useNavigate, Link as RouterLink} from "react-router-dom";
 
 import DialogContainer from "../../components/dialog/DialogContainer";
-// import useResponsive from "../../hooks/useResponsive";
 import {CaretLeft, X} from "phosphor-react";
 import ResetPasswordForm from "../../sections/auth/ResetPasswordForm";
 import CLoseDialogIcon from "../../components/CLoseDialogIcon";

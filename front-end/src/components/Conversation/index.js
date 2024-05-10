@@ -1,12 +1,12 @@
 import React from 'react';
 import { Box, Stack,} from "@mui/material";
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from "../Chat/Header";
+import Footer from "../Chat/Footer";
 import Message from "./Message";
 
 
 
-const Conversion = () => {
+const ConversionComponent = () => {
   return (
     <Stack height={"100%"} maxHeight={"100vh"} width={"auto"}>
       {/*chat header*/}
@@ -21,4 +21,4 @@ const Conversion = () => {
   );
 };
 
-export default Conversion;
+export default ConversionComponent;

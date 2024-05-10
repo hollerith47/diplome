@@ -1,4 +1,7 @@
 import createAxiosInstance from "../../utils/axios";
+import axios from "axios";
+import {BASE_NODE_API_URL} from "../../config";
+
 
 
 export const logInThunk = async (data, thunkAPI) => {
@@ -7,6 +10,12 @@ export const logInThunk = async (data, thunkAPI) => {
     try {
         const response = await axiosInstance
             .post("/login", {email, password});
+        const getId = await axios.post(`${BASE_NODE_API_URL}/get-user-id`, {email})
+        let data = response.data.data;
+        if (data.user && typeof data.user === 'object') {
+            data.user["_id"] = getId.data["_id"];
+            // window.localStorage.setItem("user_id", getId.data["_id"]);
+        }
         return response.data.data;
     } catch (error) {
         console.error("Login error", error);
@@ -98,7 +107,13 @@ export const getAllUsersThunk = async (_, thunkAPI) => {
         const token = state.auth.token;
         const axiosInstance = createAxiosInstance(token);
         const response = await axiosInstance.get(`/users`);
-        return response.data.data
+        let users = response.data.data;
+        for (let user of users) {
+            const getId = await axios.post(`${BASE_NODE_API_URL}/get-user-id`, {email: user.email})
+            user["_id"] = getId.data["_id"];
+        }
+
+        return users.filter(user => user.email !== "appexpress@htech.com");
     } catch (error) {
         console.error("get users", error);
         return thunkAPI.rejectWithValue(error.message);

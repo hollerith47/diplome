@@ -7,6 +7,7 @@ import {ChatList} from "../../_data";
 import {SimpleBarStyle} from "../../components/Scrollbar";
 import {ChatElement} from "../../components/ChatElements";
 import CreateGroupDialog from "../../sections/main/CreateGroupDialog";
+import NoChat from "../../assets/Illustration/NoChat";
 
 const Group = () => {
   const theme = useTheme();
@@ -94,7 +95,6 @@ const Group = () => {
 
         {/*  right */}
         {/* // TODO => implement conversations component on the right side */}
-
       </Stack>
       {openDialog && <CreateGroupDialog open={openDialog} handleClose={handleCloseDialog}/>}
 

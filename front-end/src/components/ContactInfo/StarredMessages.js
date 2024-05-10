@@ -4,7 +4,7 @@ import { UpdateSidebarType} from "../../redux/slices/appSlice";
 import {ArrowLeft} from "phosphor-react";
 import {useTheme} from "@mui/material/styles";
 import {useDispatch} from "react-redux";
-import Message from "../Conversion/Message";
+import Message from "../Conversation/Message";
 
 const StarredMessages = () => {
   const theme = useTheme();

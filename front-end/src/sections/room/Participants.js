@@ -5,7 +5,7 @@ import {useSelector} from "react-redux";
 const Participants = () => {
     const theme = useTheme();
     const { participants } = useSelector(store => store.app)
-    console.log(participants)
+    // console.log(participants)
     return (
         <Box sx={{
             p: 2,
@@ -24,7 +24,7 @@ const Participants = () => {
             }}>
                 <Typography variant="subtitle1" sx={{color: "text.secondary"}}>Participants Box</Typography>
                 <Stack>
-                    {participants?.map(({id, identity})=>(
+                    {participants && participants.length > 0 && participants.map(({id, identity})=>(
                         <Stack key={id} spacing={0.5} justifyContent="center">
                             <Box sx={{
                                 px:3,

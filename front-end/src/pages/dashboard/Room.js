@@ -7,13 +7,19 @@ import {useEffect} from "react";
 import * as webRTCHandler from "../../utils/webRTCHandler";
 import {useSelector} from "react-redux";
 import Overlay from "../../sections/room/Overlay";
+import {useNavigate} from "react-router-dom";
 
 const Room = () => {
-    const {identity, isRoomHost, roomId, showOverlay} = useSelector(store=>store.app)
+    const {identity, isRoomHost, roomId, showOverlay, connectionOnlyWithAudio} = useSelector(store=>store.app);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        webRTCHandler.getLocalPreviewAndInitRoomConnection(isRoomHost,identity, roomId)
-    }, []);
+        if (!isRoomHost && !roomId){
+            navigate("/intro");
+        }else{
+            webRTCHandler.getLocalPreviewAndInitRoomConnection(isRoomHost,identity, roomId, connectionOnlyWithAudio)
+        }
+    }, [connectionOnlyWithAudio]);
 
 
     return (

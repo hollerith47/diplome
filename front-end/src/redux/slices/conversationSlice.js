@@ -19,17 +19,17 @@ const slice = createSlice({
         fetchDirectConversations(state, action) {
             state.direct_chat.conversations = action.payload.conversations.map((el) => {
                     const this_user = el.participants.find(
-                        (elm) => elm._id.toSorted() !== user_id);
+                        (elm) => elm._id !== user_id);
                     return {
                         id: el._id,
                         user_id: this_user._id,
                         name: `${this_user.first_name}  ${this_user.last_name}`,
                         online: this_user.status === 'online',
-                        image: faker.image.avatar(),
+                        image: this_user.image,
                         msg: faker.music.songName(),
                         time: "9:36",
                         unread: 0,
-                        pinned: true,
+                        pinned: this_user.pinned,
                     }
                 }
             );
@@ -46,7 +46,7 @@ const slice = createSlice({
                             (elm) => elm._id.toString() !== user_id
                         );
                         return {
-                            id: this_conversation._id._id,
+                            id: this_conversation._id,
                             user_id: user?._id,
                             name: `${user?.firstName} ${user?.lastName}`,
                             online: user?.status === "Online",
@@ -80,6 +80,24 @@ const slice = createSlice({
                 pinned: false,
             });
         },
+        setCurrentConversation(state, action) {
+            state.direct_chat.current_conversation = action.payload;
+        },
+        fetchCurrentMessages(state, action) {
+            const messages = action.payload.messages;
+            const formatted_messages = messages.map((el) => ({
+                id: el._id,
+                type: "msg",
+                subtype: el.type,
+                message: el.text,
+                incoming: el.to === user_id,
+                outgoing: el.from === user_id,
+            }));
+            state.direct_chat.current_messages = formatted_messages;
+        },
+        addDirectMessage(state, action) {
+            state.direct_chat.current_messages.push(action.payload.message);
+        }
     }
 })
 
@@ -101,5 +119,24 @@ export const AddDirectConversation = ({conversation }) => {
 export const UpdateDirectConversation = ({conversation}) => {
     return async (dispatch, getState) => {
         dispatch(slice.actions.updateDirectConversation({conversation}))
+    }
+}
+
+export const SetCurrentConversation = (current_conversation) => {
+    return async (dispatch, getState) => {
+        dispatch(slice.actions.setCurrentConversation(current_conversation));
+    };
+};
+
+
+export const FetchCurrentMessages = ({messages}) => {
+    return async(dispatch, getState) => {
+        dispatch(slice.actions.fetchCurrentMessages({messages}));
+    }
+}
+
+export const AddDirectMessage = (message) => {
+    return async (dispatch, getState) => {
+        dispatch(slice.actions.addDirectMessage({message}));
     }
 }

@@ -6,9 +6,15 @@ import {IconButton} from "@mui/material";
 
 const HangUpButton = () => {
     const theme = useTheme();
-    const navigation = useNavigate();
+    const navigate = useNavigate();
     const handleHangup = () => {
-        navigation("/intro");
+        const videosContainer = document.getElementById("videos_portal");
+        if (videosContainer) videosContainer.innerHTML = "";
+        navigate("/intro");
+
+        setTimeout(()=> {
+            window.location.reload();
+        }, 100)
     }
     return (
         <ButtonContainer bgColor={theme.palette.error.main}>

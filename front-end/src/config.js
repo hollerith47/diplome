@@ -4,8 +4,8 @@ import { enUS, frFR, zhCN, viVN, arSD, ruRU } from '@mui/material/locale';
 // routes
 import { PATH_DASHBOARD } from "./routes/paths";
 
-export const BASE_BACKEND_URL = process.env.REACT_APP_BASE_BACKEND_URL;
-export const BASE_API_URL = process.env.REACT_APP_BASE_API_URL;
+export const BASE_BACKEND_URL = process.env.REACT_APP_BASE_API_URL;
+export const BASE_NODE_API_URL = process.env.REACT_APP_NODE_API;
 
 export const defaultSettings = {
   themeMode: "light",

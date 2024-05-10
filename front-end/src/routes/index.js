@@ -38,6 +38,7 @@ export default function Router() {
         { path: "group", element: <GroupPage /> },
         { path: "call", element: <CallPage /> },
         { path: "profile", element: <ProfilePage /> },
+        { path: "conversation", element: <Conversation /> },
         { path: "intro", element: <Intro /> },
         { path: "join-room", element: <Join /> },
         { path: "room", element: <Room /> },
@@ -68,3 +69,4 @@ const ProfilePage = Loadable(lazy(() => import("../pages/dashboard/Profile")));
 const Intro = Loadable(lazy(() => import("../pages/dashboard/Intro")));
 const Join = Loadable(lazy(() => import("../pages/dashboard/Join")));
 const Room = Loadable(lazy(() => import("../pages/dashboard/Room")));
+const Conversation = Loadable(lazy(() => import("../pages/dashboard/Conversation")));

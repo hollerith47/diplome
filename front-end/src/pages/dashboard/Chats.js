@@ -10,18 +10,21 @@ import {ChatElement} from "../../components/ChatElements";
 import {useDispatch, useSelector} from "react-redux";
 import {getUsers} from "../../redux/slices/authSlice";
 import ListUsersDialog from "../../sections/main/ListUsersDialog";
-import * as wss from "../../utils/wss";
+import {socket} from "../../socket";
+import {FetchDirectConversations} from "../../redux/slices/conversationSlice";
+import BottomNav from "../../layouts/dashboard/BottonNav";
 
 
-const user_id = window.localStorage.getItem("user_id");
+
 const Chats = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const isDesktop = useResponsive("up", "md");
+    const user_id = useSelector(store => store.auth.user._id);
 
-    const { conversations } = useSelector(store => store.conversation.direct_chat);
+    const {conversations} = useSelector(store => store.conversation.direct_chat);
 
-    const { allUsers } = useSelector(store => store.auth);
+    const {allUsers} = useSelector(store => store.auth);
     const usersArray = allUsers;
 
     const [openDialog, setOpenDialog] = useState(false);
@@ -30,11 +33,12 @@ const Chats = () => {
         setOpenDialog(false);
     }
 
-    useEffect(()=>{
-        wss.getDirectConversation(user_id, (data) => {
-            // data => list of conversation
-        })
-    }, [])
+    useEffect(() => {
+        socket.emit('get_direct_conversation', {user_id}, (data) => {
+            console.log(data);
+            dispatch(FetchDirectConversations({conversations: data}));
+        });
+    }, [user_id, dispatch])
 
 
     return (
@@ -48,10 +52,9 @@ const Chats = () => {
                         : theme.palette.background,
                     boxShadow: "0 0 2px rgba(0, 0, 0, 0.25)",
                 }}>
-                {/*{!isDesktop && (*/}
-                {/*    // <h1>Mobile</h1>*/}
-                {/*)*/}
-                {/*}*/}
+                {!isDesktop && (
+                    <BottomNav />
+                )}
 
                 <Stack p={3} spacing={2} sx={{height: "100vh"}}>
                     <Stack
@@ -116,8 +119,9 @@ const Chats = () => {
                                 <Typography variant="subtitle2" sx={{color: "#676767"}}>
                                     All Chats
                                 </Typography>
-                                {conversations.filter((item) => !item.pinned).map((item) => {
-                                    return <ChatElement {...item}/>
+                                {ChatList.filter((item) => item.pinned).map((item) => {
+                                    console.log(conversations)
+                                    return <ChatElement {...item} />
                                 })}
                             </Stack>
                         </SimpleBarStyle>
