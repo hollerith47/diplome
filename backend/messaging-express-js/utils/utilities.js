@@ -6,8 +6,9 @@ const findUser = async (email) => {
 
 const getUserIdFromEmail = async (email) => {
     const user = await User.findOne({email});
-    return user["._id"];
+    return user["_id"];
 }
+
 module.exports = {
     findUser,
     getUserIdFromEmail

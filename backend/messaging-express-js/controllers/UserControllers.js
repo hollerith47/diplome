@@ -26,7 +26,7 @@ const upsertUser = async (data) => {
 }
 
 
-const getUsers = async () =>{
+const getUsers = async (token) =>{
     try {
         // const token = await loginAPI();
 

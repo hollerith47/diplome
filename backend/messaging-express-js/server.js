@@ -1,14 +1,17 @@
 require("dotenv").config()
 const express = require('express');
 const http = require('http');
+const bodyParser = require('body-parser');
 const {v4: uuidv4} = require('uuid');
 const cors = require('cors');
 const twilio = require('twilio');
 const path = require("path");
 const {findUser, getUserIdFromEmail} = require("./utils/utilities")
 const connectDB = require("./config/database");
-const { joinRoomHandler, createNewRoomHandler, disconnectHandler, existingRoom} = require('./controllers/RoomController')
-const {isAuth, loginAPI} = require("./controllers/AuthController");
+const { joinRoomHandler, createNewRoomHandler, disconnectHandler, existingRoom, signalingHandler,
+    initializeConnectionHandler
+} = require('./controllers/RoomController')
+const {isAuth, loginAPI, getId} = require("./controllers/AuthController");
 const OneToOneMessage = require("./models/OneToOneMessage");
 const User = require('./models/user.model');
 
@@ -19,9 +22,25 @@ connectDB();
 const app = express();
 const server = http.createServer(app)
 app.use(cors());
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 
+app.get("/api/get-turn-credentials", (req, res) => {
+    const accountSID = process.env.TWILIO_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
 
+    const client = twilio(accountSID, authToken);
+    try {
+        client.tokens.create().then((token) => {
+            res.send({token});
+        })
+    }catch (error){
+        console.log("error while fetching twilio");
+        console.log(error);
+        res.send({token: null})
+    }
+});
 app.get("/api/room-exists/:roomId", existingRoom)
 
 const io = require('socket.io')(server, {
@@ -30,6 +49,8 @@ const io = require('socket.io')(server, {
         methods: ['GET', 'POST']
     }
 })
+// app.post("/api/login", login);
+app.post("/api/get-user-id", getId);
 io.on('connection', async (socket) => {
     const token = socket.handshake.query.token
     console.log(`user connected socket ID: ${socket.id}`);
@@ -42,16 +63,16 @@ io.on('connection', async (socket) => {
         socket.emit("unauthorized", "Authentication failed")
         return socket.disconnect();
     }
-    const {email} = await isAuthenticated;
-    const user = await findUser(email)
-    if (user){
-        const user_id = user['_id']
-        socket.emit("authenticated", {user_id})
-    }
+    // const {email} = await isAuthenticated;
+    // const user = await findUser(email)
+    // if (user){
+    //     const user_id = user['_id']
+    //     socket.emit("authenticated", {user_id})
+    // }
 
     socket.on("get_direct_conversation", async ({user_id}, callback) => {
         const existing_conversation = await OneToOneMessage.find({
-            participants: {$all: [user_id]},
+            participants: {$all: user_id},
         }).populate("participants", "first_name last_name _id email status");
 
         console.log("get_direct_conversation", user_id)
@@ -62,9 +83,9 @@ io.on('connection', async (socket) => {
 
     socket.on("start_conversation", async (data) => {
         // data : { to, from }
-        const { from} = data;
-        let {to } = data
-        to = await getUserIdFromEmail(to);
+        const { from, to} = data;
+        // let {to } = data
+        // to = await getUserIdFromEmail(to);
 
         console.log("start_conversation", { to, from})
 
@@ -79,8 +100,8 @@ io.on('connection', async (socket) => {
             let new_chat = await OneToOneMessage.create({
                 participants: [to, from],
             });
-
-            new_chat = await OneToOneMessage.findById(new_chat._id).populate("participants", "first_name last_name _id email status");
+            // findById(new_chat._id)
+            new_chat = await OneToOneMessage.findById(new_chat).populate("participants", "first_name last_name _id email status");
             console.log(new_chat);
             socket.emit("start_chat", new_chat);
         }
@@ -91,15 +112,21 @@ io.on('connection', async (socket) => {
     });
 
     socket.on("get_messages", async (data, callback) => {
-        const {messages} = await OneToOneMessage.findById(data.conversation_id).select("messages")
-        callback(messages)
+        try {
+            const {messages} = await OneToOneMessage.findById(data.conversation_id).select("messages")
+            callback(messages)
+        }catch (error){
+            console.log(error)
+        }
+        // const {messages} = await OneToOneMessage.findById(data.conversation_id).select("messages")
+        // callback(messages)
     })
 
-    // handle text/link messages
-    socket.on("text_message", (data)=>{
+    // handle incoming text/link messages
+    socket.on("text_message", async (data)=>{
         console.log("received text message", data)
 
-        textMessageHandler(data, socket)
+        await textMessageHandler(data, socket)
     })
 
     // handle file messages
@@ -107,6 +134,12 @@ io.on('connection', async (socket) => {
         console.log("received file message", data)
 
         fileMessageHandler(data, socket)
+    })
+
+    socket.on("end", async (data)=>{
+        if (data.user_id){
+            await User.findOneAndUpdate(data.user_id, {status: "Offline"});
+        }
     })
 
     // handle Room
@@ -118,6 +151,14 @@ io.on('connection', async (socket) => {
     });
     socket.on("disconnect", ()=>{
         disconnectHandler(socket, io)
+    });
+
+    socket.on("conn-signal", (data)=>{
+        signalingHandler(socket, io, data)
+    })
+
+    socket.on("conn-init", (data)=>{
+        initializeConnectionHandler(socket, io, data)
     })
 })
 
@@ -142,9 +183,11 @@ const fileMessageHandler = (data, socket) => {
 
 const textMessageHandler = async (data, socket) => {
     // data : {to, from, message, conversation_id, type}
-    const { from, message, conversation_id, type} = data;
-    let {to} = data
-    to = await getUserIdFromEmail(to);
+    const { from, message, conversation_id, type, to} = data;
+    // to = await getUserIdFromEmail(to);
+
+    const to_user = await User.findById(to);
+    const from_user = await User.findById(from);
 
     const new_message = {
         to,
@@ -158,22 +201,22 @@ const textMessageHandler = async (data, socket) => {
     chat.messages.push(new_message);
 
     // save to database
-    await chat.save({});
+    await chat.save({new: true, validateModifiedOnly: true});
 
     // emit new_message -> to user
-    const to_user = await User.findById(to);
-    const from_user = await User.findById(from);
-    io.to(to_user.socket_id).emit("new_message", {
+    // const to_user = await User.findById(to);
+    // const from_user = await User.findById(from);
+    io.to(to_user?.socket_id).emit("new_message", {
         conversation_id,
         message: new_message,
     })
 
     // emit new_message-> from user
-    io.to(from_user.socket_id).emit("new_message", {
+    io.to(from_user?.socket_id).emit("new_message", {
         conversation_id,
         message: new_message,
-    })
-}
+    });
+};
 
 
 

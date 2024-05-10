@@ -7,8 +7,22 @@ from PIL import Image
 import numpy as np
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.inception_v3 import preprocess_input
+import requests
+import tempfile
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+model_url = os.getenv("MODEL_IMAGES")
+response = requests.get(model_url)
+response.raise_for_status()
+
+# Créer un fichier temporaire pour le modèle
+with tempfile.NamedTemporaryFile(suffix='.h5', delete=False) as tmp:
+    tmp.write(response.content)
+    tmp_path = tmp.name
+
+
+# Charger le modèle à partir du fichier temporaire
 
 
 def allowed_file(filename):
@@ -40,7 +54,8 @@ def load_and_preprocess_image(img_path):
 def predict_image(img_path):
     class_indices = {'nude': 0, 'safe': 1, 'sexy': 2}
     idx_to_class = {v: k for k, v in class_indices.items()}
-    model = load_model(os.getenv("MODEL_IMAGES"))
+    model = load_model(tmp_path)
+    # model = load_model(os.getenv("MODEL_IMAGES"))
     processed_image = load_and_preprocess_image(img_path)
     prediction = model.predict(processed_image)
     predicted_class_idx = np.argmax(prediction[0])

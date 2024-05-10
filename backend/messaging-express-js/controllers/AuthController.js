@@ -1,5 +1,7 @@
 const axios = require("axios");
+const User = require('../models/user.model');
 const {upsertUser} = require("./UserControllers");
+const {getUserIdFromEmail} = require("../utils/utilities");
 
 const baseUrl = process.env.LARAVEL_API;
 const isAuth = async (token) =>{
@@ -23,7 +25,7 @@ const isAuth = async (token) =>{
         return false;
     }
 }
-
+let token ;
 const loginAPI = async () => {
     try {
         const userData = {
@@ -32,7 +34,7 @@ const loginAPI = async () => {
         };
 
         // Connexion pour obtenir le token
-        const loginResponse = await axios.post(`${baseUrl}/admin/login`, userData, {
+        const loginResponse = await axios.post(`${baseUrl}/login`, userData, {
             headers: { Accept: "application/json" }
         });
 
@@ -41,8 +43,10 @@ const loginAPI = async () => {
             // Ici, je suppose que votre intention était de traiter la réponse...
             // await upsertUser(loginResponse.data);
 
-            const token = loginResponse.data.data.token;
-            console.log({ token });
+            if (!token){
+                token = loginResponse.data.data.token;
+            }
+            console.log({ token }, "authController");
 
             // Utilisation du token pour obtenir les utilisateurs
             const usersResponse = await axios.get(`${baseUrl}/users`, {
@@ -51,7 +55,6 @@ const loginAPI = async () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-
             const users = await usersResponse.data.data;
             for(let user of users) {
                 await upsertUser(user);
@@ -63,8 +66,19 @@ const loginAPI = async () => {
     }
 };
 
+const getId = async (req, res) => {
+    const email = req.body.email;
+    console.log({email})
+    try {
+        return res.status(200).json({_id : await getUserIdFromEmail(email)})
+    }
+    catch (error) {
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+}
 
 module.exports ={
     isAuth,
-    loginAPI
+    loginAPI,
+    getId
 }

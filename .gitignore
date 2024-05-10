@@ -30,6 +30,11 @@ yarn-error.log
 *.xls
 *.pptx
 
+/backend/messaging-py/trained/*.h5
+/backend/Auth-server-API-laravel/project_contents.txt
+/backend/project_contents.txt
+/backend/messaging-py/tokenizer.json
+
 */*/node_modules
 
 *.env

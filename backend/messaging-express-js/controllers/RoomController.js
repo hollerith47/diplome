@@ -14,6 +14,7 @@ const existingRoom = (req, res) => {
             return res.status(404).json({
                 roomExists: true,
                 full: true,
+                message: 'Room is full',
             })
         } else {
             return res.status(200).json({
@@ -28,23 +29,29 @@ const existingRoom = (req, res) => {
     }
 }
 const joinRoomHandler = (data, socket, io) => {
-    const {identity, roomId} = data;
+    const {identity, roomId, onlyAudio} = data;
     const newUser = {
         identity,
         id: uuidv4(),
         socketId: socket.id,
         roomId,
+        onlyAudio,
     }
 
     const room = rooms.find((room) => room.id === roomId);
+
+    if (!room) {
+        socket.emit("error", { message: "La salle n'existe pas." });
+        return;
+    }
     // update the room
-    room.connectedUsers = [...room.connectedUsers, newUser];
+    room.connectedUsers.push(newUser);
 
     // join socket room
     socket.join(roomId);
 
     // add new user to connected users array
-    connectedUsers = [...connectedUsers, newUser]
+    connectedUsers.push(newUser)
 
     // emit an event to all users which are already in the room
     room.connectedUsers.forEach((user) => {
@@ -61,7 +68,7 @@ const joinRoomHandler = (data, socket, io) => {
 const createNewRoomHandler = (data, socket) =>{
     // console.log({data})
 
-    const {identity} = data;
+    const {identity, onlyAudio } = data;
     const roomId = uuidv4();
 
     const newUser = {
@@ -69,6 +76,7 @@ const createNewRoomHandler = (data, socket) =>{
         id: uuidv4(),
         socketId: socket.id,
         roomId,
+        onlyAudio,
     }
 
     // add user to connected users
@@ -100,12 +108,16 @@ const disconnectHandler = (socket, io) => {
         // remove user from connected users array (room)
         const room = rooms.find((room) => room.id === user.roomId);
         room.connectedUsers = room.connectedUsers.filter(user => user.socketId !== socket.id);
+        // connectedUsers = room;
 
         // leave socket
         socket.leave(user.roomId);
 
         // if all users leave the room must close the room
         if (room.connectedUsers.length > 0){
+            io.to(room.id).emit("user-disconnected", {
+                socketId: socket.id
+            })
             //emit and event to rest of users in the room with new list of connected users
             io.to(room.id).emit("room-update", {connectedUsers: room.connectedUsers});
         }else{
@@ -114,9 +126,28 @@ const disconnectHandler = (socket, io) => {
 
     }
 }
+
+const signalingHandler = (socket, io, data) => {
+    const { connUserSocketId, signal} = data;
+
+    const signalingData = {signal, connUserSocketId: socket.id}
+
+    io.to(connUserSocketId).emit("conn-signal", signalingData)
+}
+
+const initializeConnectionHandler =  (socket, io, data) => {
+    const { connUserSocketId} = data;
+
+    const initData = {connUserSocketId : socket.id}
+
+    io.to(connUserSocketId).emit("conn-init", initData)
+}
+
 module.exports = {
     joinRoomHandler,
     createNewRoomHandler,
     disconnectHandler,
-    existingRoom
+    existingRoom,
+    signalingHandler,
+    initializeConnectionHandler
 }
