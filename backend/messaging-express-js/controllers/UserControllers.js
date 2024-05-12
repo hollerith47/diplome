@@ -11,7 +11,7 @@ const upsertUser = async (data) => {
         const userData = {
             first_name, last_name, email,
             role, phone, about, gender,
-            image, birth_date
+            image, birth_date,
         }
         const user = await User.findOneAndUpdate(
             { email: email }, // critère de recherche par email

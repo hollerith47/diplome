@@ -68,7 +68,7 @@ const loginAPI = async () => {
 
 const getId = async (req, res) => {
     const email = req.body.email;
-    console.log({email})
+    // console.log({email})
     try {
         return res.status(200).json({_id : await getUserIdFromEmail(email)})
     }

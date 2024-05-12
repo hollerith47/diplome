@@ -4,7 +4,7 @@ const http = require('http');
 const bodyParser = require('body-parser');
 const {v4: uuidv4} = require('uuid');
 const cors = require('cors');
-const twilio = require('twilio');
+// const twilio = require('twilio');
 const path = require("path");
 const {findUser, getUserIdFromEmail} = require("./utils/utilities")
 const connectDB = require("./config/database");
@@ -17,7 +17,7 @@ const User = require('./models/user.model');
 
 const PORT = process.env.PORT || 5000;
 
-connectDB();
+
 
 const app = express();
 const server = http.createServer(app)
@@ -57,8 +57,9 @@ io.on('connection', async (socket) => {
     console.log(`user connected token: ${token}`);
 
     // console.log({tokenAPI});
-
     const isAuthenticated = await isAuth(token);
+    await User.findOneAndUpdate({ email: isAuthenticated.email }, { status: "Online", socket_id: socket.id });
+
     if (!isAuthenticated){
         socket.emit("unauthorized", "Authentication failed")
         return socket.disconnect();
@@ -86,7 +87,6 @@ io.on('connection', async (socket) => {
         const { from, to} = data;
         // let {to } = data
         // to = await getUserIdFromEmail(to);
-
         console.log("start_conversation", { to, from})
 
         const existing_conversation = await OneToOneMessage.find({
@@ -113,6 +113,7 @@ io.on('connection', async (socket) => {
 
     socket.on("get_messages", async (data, callback) => {
         try {
+            // console.log("get_messages", data)
             const {messages} = await OneToOneMessage.findById(data.conversation_id).select("messages")
             callback(messages)
         }catch (error){
@@ -138,7 +139,7 @@ io.on('connection', async (socket) => {
 
     socket.on("end", async (data)=>{
         if (data.user_id){
-            await User.findOneAndUpdate(data.user_id, {status: "Offline"});
+            await User.findOneAndUpdate({_id: data.user_id}, {status: "Offline", socket_id: ""});
         }
     })
 
@@ -150,7 +151,8 @@ io.on('connection', async (socket) => {
         joinRoomHandler(data, socket, io)
     });
     socket.on("disconnect", ()=>{
-        disconnectHandler(socket, io)
+        disconnectHandler(socket, io);
+        console.log(`user disconnected socket ID: ${socket.id}`);
     });
 
     socket.on("conn-signal", (data)=>{
@@ -189,6 +191,9 @@ const textMessageHandler = async (data, socket) => {
     const to_user = await User.findById(to);
     const from_user = await User.findById(from);
 
+    // send to flask api to check the message
+
+
     const new_message = {
         to,
         from,
@@ -197,8 +202,16 @@ const textMessageHandler = async (data, socket) => {
         created_at: Date.now(),
     }
     // create a new conversation if not already existing
-    const chat = await OneToOneMessage.findById(conversation_id);
-    chat.messages.push(new_message);
+    let chat = await OneToOneMessage.findById(conversation_id);
+    // if (!chat) {
+    //     chat = new OneToOneMessage({
+    //         _id: conversation_id,
+    //         participants: [to, from],
+    //         messages: [],
+    //     });
+    //     await chat.save({new: true, validateModifiedOnly: true});
+    // }
+    chat?.messages?.push(new_message);
 
     // save to database
     await chat.save({new: true, validateModifiedOnly: true});
@@ -218,12 +231,11 @@ const textMessageHandler = async (data, socket) => {
     });
 };
 
-
-
-
 server.listen(PORT, async ()=>{
-    setInterval(() => {
-        loginAPI().catch(console.error);
+    await connectDB();
+    await loginAPI();
+    setInterval(async () => {
+        await loginAPI().catch(console.error);
     }, 5 * 60 * 1000);
     console.log(`Server listening on ${PORT}`);
 })

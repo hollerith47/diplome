@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
         socket_id: {type: String},
         status: {
             type: String,
-            enum: ['online', 'offline']
+            enum: ['Online', 'Offline']
         }
     },
     {
