@@ -5,13 +5,15 @@ import {CaretDown, MagnifyingGlass, Phone, VideoCamera} from "phosphor-react";
 import {useTheme} from "@mui/material/styles";
 import StyledBadge from "../StyledBadge";
 import {ToggleSidebar} from "../../redux/slices/appSlice";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import useResponsive from "../../hooks/useResponsive";
 
-const Header = ({to_user}) => {
-    const theme = useTheme();
+const Header = () => {
     const dispatch = useDispatch();
+    const isMobile = useResponsive("between", "md", "xs", "sm");
+    const theme = useTheme();
 
-    const fullName = `${to_user.first_name} ${to_user.last_name}`;
+    const {current_conversation} = useSelector((state) => state.conversation.direct_chat);
 
     return (
         <>
@@ -39,18 +41,19 @@ const Header = ({to_user}) => {
                             anchorOrigin={{vertical: "bottom", horizontal: "right"}}
                             variant="dot"
                         >
-                            <Avatar alt={fullName} src={to_user.image}/>
+                            <Avatar alt={current_conversation?.name}
+                                    src={current_conversation?.image}/>
                         </StyledBadge>
                     </Box>
                     <Stack spacing={0.2}>
-                        <Typography variant={"subtitle2"}>{fullName}</Typography>
+                        <Typography variant={"subtitle2"}>{current_conversation?.name}</Typography>
                         <Typography variant={"caption"}>Online</Typography>
                     </Stack>
                 </Stack>
                 {/* btns */}
                 <Stack direction={"row"} spacing={3}>
-                    <IconButton><VideoCamera/></IconButton>
-                    <IconButton><Phone/></IconButton>
+                    {/*<IconButton><VideoCamera/></IconButton>*/}
+                    {/*<IconButton><Phone/></IconButton>*/}
                     <IconButton><MagnifyingGlass/></IconButton>
                     <Divider orientation={"vertical"} flexItem/>
                     <IconButton onClick={()=> dispatch(ToggleSidebar())}><CaretDown/></IconButton>

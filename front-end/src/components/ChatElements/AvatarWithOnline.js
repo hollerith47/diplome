@@ -46,7 +46,7 @@ const AvatarWithOnline = ({online, image}) => {
             <Avatar src={image}/>
           </StyledBadge>
           :
-          <Avatar src={faker.image.avatar()}/>
+          <Avatar src={image}/>
       }
     </>
   );

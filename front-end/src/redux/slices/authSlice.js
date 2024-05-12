@@ -1,7 +1,9 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {
-    confirmEmailThunk, createEventThunk,
-    forgotPasswordThunk, getAllUsersThunk,
+    confirmEmailThunk,
+    createEventThunk,
+    forgotPasswordThunk,
+    getAllUsersThunk,
     logInThunk,
     logOutThunk,
     resetPasswordThunk,
@@ -26,6 +28,7 @@ const initialState = {
     allUsers: null,
 }
 
+const user_id = window.localStorage.getItem("user_id");
 export const loginUser = createAsyncThunk(
     "user/login",
     async (user, thunkAPI) => {
@@ -113,7 +116,7 @@ const slice = createSlice({
             })
             .addCase(getUsers.fulfilled, (state, {payload})=> {
                 state.isLoading = false;
-                state.allUsers = payload;
+                state.allUsers = payload.filter(user => user._id !== user_id);
             })
             .addCase(getUsers.rejected, state =>{
                 state.isLoading = false;

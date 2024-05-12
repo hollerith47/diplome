@@ -44,7 +44,6 @@ const LoginForm = () => {
             // submit _data to server api
             const response = await dispatch(loginUser(data))
             console.log(response)
-            console.log(response)
             if (response.type === "user/login/fulfilled"){
                 setTimeout(() => {
                     navigate("/app");

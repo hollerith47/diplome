@@ -8,6 +8,11 @@ const initialState = {
         type: "CONTACT", // can be CONTACT, STARRED MESSAGE, SHARED DATA
         linkSelected: 0,
     },
+    snackbar:{
+        open: false,
+        severity: null,
+        message: null,
+    },
     identity: "",
     roomId: "",
     chat_type: null,
@@ -67,6 +72,13 @@ export const SelectConversation = ({room_id}) => {
     };
 };
 
+export const showSnackBar = ({ severity, message }) => async (dispatch, getState) => {
+    dispatch(slice.actions.openSnackBar({message, severity}));
+    setTimeout(() => {
+        dispatch(slice.actions.closeSnackBar());
+    }, 4000);
+}
+
 const slice = createSlice({
     name: "app",
     initialState,
@@ -106,6 +118,17 @@ const slice = createSlice({
             state.chat_type = "individual";
             state.room_id = action.payload.room_id;
         },
+        openSnackBar(state, action) {
+            console.log(action.payload);
+            state.snackbar.open = true;
+            state.snackbar.severity = action.payload.severity;
+            state.snackbar.message = action.payload.message;
+        },
+        closeSnackBar(state, action) {
+            state.snackbar.open = false;
+            state.snackbar.severity = null;
+            state.snackbar.message = null;
+        }
     }
 });
 
@@ -119,10 +142,15 @@ export const {
     updateIsRoomHost,
     UpdateSidebarLink,
     UpdateSidebarType,
-    updateSocketId
+    updateSocketId,
+    closeSnackBar,
+    openSnackBar,
+    selectConversation
 } = slice.actions;
 
 export default slice.reducer;
+
+
 
 
 

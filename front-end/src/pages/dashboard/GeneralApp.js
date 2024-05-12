@@ -18,14 +18,14 @@ const GeneralApp = () => {
     const theme = useTheme();
     const {allUsers} = useSelector(store => store.auth);
     const usersArray = allUsers;
-    console.log({usersArray})
+    // console.log({usersArray})
 
     const [openDialog, setOpenDialog] = useState(false);
     const handleCloseDialog = () => {
         setOpenDialog(false);
     }
 
-    const { sideBar, room_id, chat_type } = useSelector((state) => state.app);
+    const { sideBar, room_id, chat_type } = useSelector(store => store.app);
 
     return (
         <>
@@ -60,7 +60,7 @@ const GeneralApp = () => {
                         >
                             <NoChat />
                             <Typography variant="subtitle2">
-                                Select a conversation or start a{" "}
+                                Выберите беседу или начните {" "}
                                 <Button
                                     style={{
                                         color: theme.palette.primary.main,
@@ -68,7 +68,7 @@ const GeneralApp = () => {
                                     }}
                                     onClick={() => setOpenDialog(true)}
                                 >
-                                    new one
+                                    новую
                                 </Button>
                             </Typography>
                         </Stack>

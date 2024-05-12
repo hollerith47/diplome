@@ -24,7 +24,7 @@ import useResponsive from "../../hooks/useResponsive";
 
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {socket} from "../../socket";
 import useUserParam from "../../hooks/useUserParam";
 
@@ -75,7 +75,7 @@ const ChatInput = ({openPicker, setOpenPicker, setValue, value, inputRef}) => {
         <StyledInput
             fullWidth
             inputRef={inputRef}
-            placeholder="Write a message..."
+            placeholder="Напишите сообщение..."
             variant="filled"
             value={value}
             onChange={e => {
@@ -153,14 +153,11 @@ function containsUrl(text) {
 
 const Footer = () => {
     const theme = useTheme();
-
+    const dispatch = useDispatch()
     const {current_conversation} = useSelector(store => store.conversation.direct_chat);
-    const {sideBar, room_id} = useSelector(store => store.app);
-
-    const user_id = useUserParam();
+    const user_id = useSelector(store => store.auth.user._id);
     const isMobile = useResponsive("between", "md", "xs", "sm");
-
-    const [searchParams] = useSearchParams();
+    const {sideBar, room_id} = useSelector(store => store.app);
     const [openPicker, setOpenPicker] = useState(false);
     const [value, setValue] = useState("");
     const inputRef = useRef(null);
@@ -181,6 +178,21 @@ const Footer = () => {
             // Move the cursor to the end of the inserted emoji
             input.selectionStart = input.selectionEnd = selectionStart + 1;
         }
+    }
+
+    function sendMessage() {
+        if (value.trim() !== "") {
+            const messageContent = linkify(value);
+            socket.emit("text_message", {
+                message: messageContent,
+                conversation_id: room_id,
+                from: user_id,
+                to: current_conversation?.user_id,
+                type: containsUrl(value) ? "Link" : "Text",
+            });
+            setValue(""); // Réinitialise l'input après l'envoi
+        }
+
     }
 
     return (
@@ -209,11 +221,7 @@ const Footer = () => {
                                 position: "fixed",
                                 display: openPicker ? "inline" : "none",
                                 bottom: 81,
-                                right: isMobile
-                                    ? 20
-                                    : searchParams.get("open") === "true"
-                                        ? 420
-                                        : 100,
+                                right: isMobile ? 20 : sideBar?.open ? 420 : 100,
                             }}
                         >
                             <Picker
@@ -246,18 +254,7 @@ const Footer = () => {
                             alignItems={"center"}
                             justifyContent="center"
                         >
-                            <IconButton
-                                onClick={() => {
-                                    // console.log(value)
-                                    socket.emit("text_message", {
-                                        message: linkify(value),
-                                        conversation_id: room_id,
-                                        from: user_id,
-                                        to: current_conversation?.user_id,
-                                        type: containsUrl(value) ? "Link" : "Text",
-                                    });
-                                }}
-                            >
+                            <IconButton onClick={sendMessage}>
                                 <PaperPlaneTilt color="#ffffff"/>
                             </IconButton>
                         </Stack>

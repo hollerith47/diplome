@@ -6,13 +6,14 @@ import {Search, SearchIconWrapper, StyledInputBase} from "../../components/Searc
 import {ChatList} from "../../_data";
 import {SimpleBarStyle} from "../../components/Scrollbar";
 import useResponsive from "../../hooks/useResponsive";
-import {ChatElement} from "../../components/ChatElements";
+// import {ChatElement} from "../../components/ChatElements";
 import {useDispatch, useSelector} from "react-redux";
 import {getUsers} from "../../redux/slices/authSlice";
 import ListUsersDialog from "../../sections/main/ListUsersDialog";
 import {socket} from "../../socket";
 import {FetchDirectConversations} from "../../redux/slices/conversationSlice";
 import BottomNav from "../../layouts/dashboard/BottonNav";
+import ChatElement from "../../components/ChatElement";
 
 
 
@@ -23,6 +24,8 @@ const Chats = () => {
     const user_id = useSelector(store => store.auth.user._id);
 
     const {conversations} = useSelector(store => store.conversation.direct_chat);
+
+    console.log("conversations",conversations)
 
     const {allUsers} = useSelector(store => store.auth);
     const usersArray = allUsers;
@@ -38,7 +41,7 @@ const Chats = () => {
             console.log(data);
             dispatch(FetchDirectConversations({conversations: data}));
         });
-    }, [user_id, dispatch])
+    }, [])
 
 
     return (
@@ -63,9 +66,9 @@ const Chats = () => {
                         justifyContent="space-between"
                     >
                         <Typography variant="h5">
-                            Chats
+                            Чаты
                         </Typography>
-                        <Stack direction={"row"} spacing={1}>
+                        <Stack direction="row" spacing={1}>
                             {/* // TODO: put a conditional rendering */}
                             <IconButton onClick={() => {
                                 if (!allUsers) {
@@ -87,7 +90,7 @@ const Chats = () => {
                                 <MagnifyingGlass color="#709CE6"/>
                             </SearchIconWrapper>
                             <StyledInputBase
-                                placeholder="Search…"
+                                placeholder="Поиск…"
                                 inputProps={{"aria-label": "search"}}
                             />
                         </Search>
@@ -117,11 +120,14 @@ const Chats = () => {
                             </Stack>
                             <Stack spacing={2.4}>
                                 <Typography variant="subtitle2" sx={{color: "#676767"}}>
-                                    All Chats
+                                    Все чаты
                                 </Typography>
-                                {ChatList.filter((item) => item.pinned).map((item) => {
-                                    console.log(conversations)
-                                    return <ChatElement {...item} />
+                                {conversations.map((item, idx) => {
+                                    // conversations.filter((item) => item.pinned).map((item, idx)
+                                    // console.log(conversations)
+                                    // return <ChatElement {...item} />
+                                    return <ChatElement {...item}  key={idx}/>
+
                                 })}
                             </Stack>
                         </SimpleBarStyle>

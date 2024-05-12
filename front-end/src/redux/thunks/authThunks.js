@@ -14,7 +14,8 @@ export const logInThunk = async (data, thunkAPI) => {
         let data = response.data.data;
         if (data.user && typeof data.user === 'object') {
             data.user["_id"] = getId.data["_id"];
-            // window.localStorage.setItem("user_id", getId.data["_id"]);
+            data.user["socket_id"] = getId.data["socket_id"];
+            window.localStorage.setItem("user_id", getId.data["_id"]);
         }
         return response.data.data;
     } catch (error) {
@@ -105,14 +106,17 @@ export const getAllUsersThunk = async (_, thunkAPI) => {
     try {
         const state = thunkAPI.getState();
         const token = state.auth.token;
+        const actualUserEmail = state.auth.user.email;
         const axiosInstance = createAxiosInstance(token);
         const response = await axiosInstance.get(`/users`);
         let users = response.data.data;
+        users.filter(user => user.email !== actualUserEmail )
         for (let user of users) {
-            const getId = await axios.post(`${BASE_NODE_API_URL}/get-user-id`, {email: user.email})
-            user["_id"] = getId.data["_id"];
+            const getUserData = await axios.post(`${BASE_NODE_API_URL}/get-user-id`, {email: user.email})
+            user["_id"] = getUserData.data["_id"];
+            user["online"] = getUserData.data["status"];
+            user["socketId"] = getUserData.data["socket_id"];
         }
-
         return users.filter(user => user.email !== "appexpress@htech.com");
     } catch (error) {
         console.error("get users", error);
