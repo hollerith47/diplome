@@ -10,22 +10,14 @@ import useResponsive from "../../hooks/useResponsive";
 import {useDispatch, useSelector} from "react-redux";
 import {getUsers} from "../../redux/slices/authSlice";
 import ListUsersDialog from "../../sections/main/ListUsersDialog";
-import {socket} from "../../socket";
-import {FetchDirectConversations} from "../../redux/slices/conversationSlice";
 import BottomNav from "../../layouts/dashboard/BottonNav";
 import ChatElement from "../../components/ChatElement";
-
-
 
 const Chats = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const isDesktop = useResponsive("up", "md");
-    const user_id = useSelector(store => store.auth.user._id);
-
-    const {conversations} = useSelector(store => store.conversation.direct_chat);
-
-    console.log("conversations",conversations)
+    const { user_conversations } = useSelector(store => store.messages.chat);
 
     const {allUsers} = useSelector(store => store.auth);
     const usersArray = allUsers;
@@ -35,14 +27,6 @@ const Chats = () => {
     const handleCloseDialog = () => {
         setOpenDialog(false);
     }
-
-    useEffect(() => {
-        socket.emit('get_direct_conversation', {user_id}, (data) => {
-            console.log(data);
-            dispatch(FetchDirectConversations({conversations: data}));
-        });
-    }, [])
-
 
     return (
         <>
@@ -111,23 +95,13 @@ const Chats = () => {
                         sx={{flexGrow: 1, overflowX: "hidden", overflowY: "scroll", height: "100%"}}>
                         <SimpleBarStyle timeout={500} clickOnTrack={false}>
                             <Stack spacing={2.4}>
-                                {/*<Typography variant="subtitle2" sx={{color: "#676767"}}>*/}
-                                {/*    Pinned*/}
-                                {/*</Typography>*/}
-                                {/*{ChatList.filter((item) => item.pinned).map((item) => {*/}
-                                {/*    return <ChatElement {...item}/>*/}
-                                {/*})}*/}
                             </Stack>
                             <Stack spacing={2.4}>
                                 <Typography variant="subtitle2" sx={{color: "#676767"}}>
                                     Все чаты
                                 </Typography>
-                                {conversations.map((item, idx) => {
-                                    // conversations.filter((item) => item.pinned).map((item, idx)
-                                    // console.log(conversations)
-                                    // return <ChatElement {...item} />
+                                {user_conversations?.map((item, idx) => {
                                     return <ChatElement {...item}  key={idx}/>
-
                                 })}
                             </Stack>
                         </SimpleBarStyle>

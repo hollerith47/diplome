@@ -84,7 +84,7 @@ const DeleteChatDialog = ({ open, handleClose }) => {
 const Contact = () => {
     const dispatch = useDispatch();
 
-    const {current_conversation} = useSelector((state) => state.conversation.direct_chat);
+    const { current_conversation } = useSelector(store => store.messages.chat);
 
     const theme = useTheme();
 

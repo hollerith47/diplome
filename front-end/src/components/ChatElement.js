@@ -4,6 +4,8 @@ import { styled, useTheme, alpha } from "@mui/material/styles";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { SelectConversation } from "../redux/slices/appSlice";
+import {socket} from "../socket";
+import {setCurrentConversation, setIsChatActive} from "../redux/slices/messagesSlice";
 
 const truncateText = (string, n) => {
   return string?.length > n ? `${string?.slice(0, n)}...` : string;
@@ -44,23 +46,34 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const ChatElement = ({ img, name, msg, time, unread, online, id }) => {
+const ChatElement = ({ img, name, msg, time, unread, online, _id }) => {
   const dispatch = useDispatch();
   const {room_id} = useSelector((state) => state.app);
   const selectedChatId = room_id?.toString();
 
-  let isSelected = +selectedChatId === id;
+  let isSelected = +selectedChatId === _id;
 
   if (!selectedChatId) {
     isSelected = false;
   }
+
+  const user_id = window.localStorage.getItem('user_id');
+    const current_conversation_user_info = {
+        _id,
+        name,
+        img,
+        online
+    }
 
   const theme = useTheme();
 
   return (
     <StyledChatBox
       onClick={() => {
-        dispatch(SelectConversation({room_id: id}));
+          socket.emit("start_conversation", {from: user_id, to:_id});
+          dispatch(setCurrentConversation(current_conversation_user_info));
+          // setIsChatActive
+          dispatch(setIsChatActive())
       }}
       sx={{
         width: "100%",

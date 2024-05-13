@@ -19,7 +19,7 @@ const slice = createSlice({
             console.log("conversation list from Feach direct conversation", action.payload)
             state.direct_chat.conversations = action.payload.conversations.map((el) => {
                     const this_user = el.participants.find((elm) => elm._id.toString() !== user_id);
-                    const lastMessage = el.messages[el.messages.length - 1];
+                    const lastMessage = el.messages ?  el.messages[el.messages.length - 1] : "";
 
                     return {
                         id: el._id,
@@ -74,7 +74,7 @@ const slice = createSlice({
             const this_conversation = action.payload.conversation;
             console.log("This_conversation", this_conversation)
 
-            const user = this_conversation.participants.find(
+            const user = this_conversation?.participants.find(
                 (elm) => elm._id.toString() !== user_id
             );
             state.direct_chat.conversations = state.direct_chat.conversations.filter(

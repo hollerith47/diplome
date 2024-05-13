@@ -110,14 +110,16 @@ export const getAllUsersThunk = async (_, thunkAPI) => {
         const axiosInstance = createAxiosInstance(token);
         const response = await axiosInstance.get(`/users`);
         let users = response.data.data;
-        users.filter(user => user.email !== actualUserEmail )
+        // users.filter(user => user.email !== actualUserEmail )
+        // console.log("actual user email", actualUserEmail);
+        // console.log(users)
         for (let user of users) {
             const getUserData = await axios.post(`${BASE_NODE_API_URL}/get-user-id`, {email: user.email})
             user["_id"] = getUserData.data["_id"];
             user["online"] = getUserData.data["status"];
             user["socketId"] = getUserData.data["socket_id"];
         }
-        return users.filter(user => user.email !== "appexpress@htech.com");
+        return users.filter(user => user.email !== "appexpress@htech.com" && user.email !== actualUserEmail);
     } catch (error) {
         console.error("get users", error);
         return thunkAPI.rejectWithValue(error.message);

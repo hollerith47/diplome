@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {connectSocket, socket} from "../../socket";
 import {AddDirectConversation, AddDirectMessage, UpdateDirectConversation} from "../../redux/slices/conversationSlice";
 import {SelectConversation, showSnackBar} from "../../redux/slices/appSlice";
+import {fetchUserConversations} from "../../redux/slices/messagesSlice";
 
 const DashboardLayout = () => {
     const {isLoggedIn, token} = useSelector(store => store.auth);
@@ -28,67 +29,28 @@ const DashboardLayout = () => {
                 connectSocket(token);
             }
 
-            socket.on("new_message", (data) => {
-                const message = data.message;
-                console.log(current_conversation, data);
-                // check if msg we got is from currently selected conversation
-                if (current_conversation?.id === data.conversation_id) {
-                    dispatch(
-                        AddDirectMessage({
-                            id: message._id,
-                            type: "msg",
-                            subtype: message.type,
-                            message: message.text,
-                            incoming: message.to === user._id,
-                            outgoing: message.from === user._id,
-                        })
-                    )
-                }
-            });
 
             socket.on("unauthorized", (data) => {
                 dispatch(showSnackBar({
                     open: true,
-                    message: "You are not allowed",
+                    message: "Reconnectez-vous",
                     severity: "error",
                 }))
             });
-
-            socket.on("new_message", (data) => {
-                dispatch(showSnackBar(
-                    {
-                        open: true,
-                        message: "New message",
-                        severity: "success",
-                    }
-                ))
-            })
-
-            socket.on("start_chat", (data) => {
-                console.log(data);
-                // add / update to conversation list
-                const existing_conversation = conversations.find((el) => el?.id === data._id);
-                if (existing_conversation){
-                    dispatch(UpdateDirectConversation({conversation : data}));
-                }else{
-                    dispatch(AddDirectConversation({conversation: data }))
-                }
-
-                dispatch(SelectConversation({room_id: data._id}))
-            });
-
             // Remove event
             return () =>{
-                socket?.off("start_chat");
-                socket?.off("new_message");
+                // socket?.off("start_chat");
+                // socket?.off("new_message");
                 socket?.off("unauthorized");
+                // socket?.off("message_sent");
+                // socket?.off("message_received");
             }
 
         }else{
             return <Navigate to={"/landing"}/>
         }
 
-    }, [isLoggedIn, socket, dispatch, conversations, current_conversation]);
+    }, [isLoggedIn, socket ]);
 
     if (!isLoggedIn) {
         return <Navigate to={"/landing"}/>

@@ -34,17 +34,10 @@ const CreateCallDialogBody = ({usersList, searchTerm, handleClose}) => {
         user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.last_name.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    const handleBeginConversation = (to, from, item) => {
+    const handleBeginConversation = (to, from) => {
         socket.emit('start_conversation', {to: to, from: from});
-        // navigate(`/chats`);
-        // navigate(`/conversation`);
+        dispatch()
         navigate(`/app`);
-        dispatch(SetCurrentConversation({
-            id : to,
-            user_id: item._id,
-            name: `${item.first_name} ${item.last_name}`,
-            online: item.status
-        }))
         handleClose();
     }
 

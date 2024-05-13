@@ -1,36 +1,100 @@
-import React, {useState} from "react";
-import { useTheme } from "@mui/material/styles";
-import {Box, Button, IconButton, Stack, Typography} from "@mui/material";
-
-import { Link, useSearchParams } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useTheme} from "@mui/material/styles";
+import {Box, Button,  Stack, Typography} from "@mui/material";
 import ChatComponent from "./Conversation";
 import Chats from "./Chats";
 import Contact from "../../sections/dashboard/Contact";
 import NoChat from "../../assets/Illustration/NoChat";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import StarredMessages from "../../sections/dashboard/StarredMessages";
 import Media from "../../sections/dashboard/SharedMessages";
 import ListUsersDialog from "../../sections/main/ListUsersDialog";
+import {socket} from "../../socket";
+import {showSnackBar} from "../../redux/slices/appSlice";
+import {fetchUserConversations, setCurrentMessages, UpdateIsSent} from "../../redux/slices/messagesSlice";
 
 const GeneralApp = () => {
-    const [searchParams] = useSearchParams();
+    const {user} = useSelector(store => store.auth);
+    const dispatch = useDispatch();
 
     const theme = useTheme();
     const {allUsers} = useSelector(store => store.auth);
+    const { isChatActive, isSent } = useSelector(store => store.messages)
     const usersArray = allUsers;
-    // console.log({usersArray})
 
     const [openDialog, setOpenDialog] = useState(false);
     const handleCloseDialog = () => {
         setOpenDialog(false);
+    };
+    const { sideBar } = useSelector(store => store.app);
+
+    const updateStates = (data) => {
+        dispatch(fetchUserConversations(data));
+        dispatch(setCurrentMessages(data));
     }
 
-    const { sideBar, room_id, chat_type } = useSelector(store => store.app);
+    useEffect(() => {
+        socket.on("message_received", (data) => {
+            dispatch(showSnackBar(
+                {
+                    open: true,
+                    message: "New message received",
+                    severity: "success",
+                }
+            ));
+            updateStates(data);
+            dispatch(UpdateIsSent());
+        })
+
+        socket.on("message_sent", (data) => {
+            dispatch(showSnackBar(
+                {
+                    open: true,
+                    message: "message sent successfully",
+                    severity: "success",
+                }
+            ));
+            updateStates(data);
+            dispatch(UpdateIsSent());
+        })
+
+        socket.on("start_chat", (data) => {
+            updateStates(data);
+            dispatch(UpdateIsSent());
+        });
+
+        socket.on("get_user_conversations", (data) => {
+            dispatch(fetchUserConversations(data));
+            dispatch(UpdateIsSent());
+        })
+
+        // Remove event
+        return () => {
+            socket?.off("start_chat");
+            socket?.off("new_message");
+            socket?.off("message_sent");
+            socket?.off("message_received");
+            socket?.off('get_user_conversations');
+        }
+    }, [openDialog]);
+
+    useEffect(() => {
+        socket.emit('get_direct_conversation', {user_id: user._id});
+        // console.log("get_direct_conversation emit");
+
+        socket.on("get_user_conversations", (data) => {
+            dispatch(fetchUserConversations(data));
+        })
+        return () => {
+            socket?.off('get_direct_conversation');
+            socket?.off('get_user_conversations');
+        };
+    }, [ dispatch, isSent]);
 
     return (
         <>
-            <Stack direction="row" sx={{ width: "100%" }}>
-                <Chats />
+            <Stack direction="row" sx={{width: "100%"}}>
+                <Chats/>
                 <Box
                     sx={{
                         height: "100%",
@@ -41,24 +105,18 @@ const GeneralApp = () => {
                             theme.palette.mode === "light"
                                 ? "#FFF"
                                 : theme.palette.background.paper,
-                        borderBottom:
-                            searchParams.get("type") === "individual-chat" &&
-                            searchParams.get("id")
-                                ? "0px"
-                                : "6px solid #0162C4",
                     }}
                 >
-                    {chat_type === "individual" &&
-                    room_id !== null ? (
-                        <ChatComponent />
+                    {isChatActive !== null ? (
+                        <ChatComponent/>
                     ) : (
                         <Stack
                             spacing={2}
-                            sx={{ height: "100vh", width: "100%" }}
+                            sx={{height: "100vh", width: "100%"}}
                             alignItems="center"
                             justifyContent={"center"}
                         >
-                            <NoChat />
+                            <NoChat/>
                             <Typography variant="subtitle2">
                                 Выберите беседу или начните {" "}
                                 <Button
@@ -78,16 +136,19 @@ const GeneralApp = () => {
                     (() => {
                         switch (sideBar.type) {
                             case "CONTACT":
-                                return <Contact />;
+                                console.log(sideBar.type)
+                                return <Contact/>;
 
                             case "STARRED":
-                                return <StarredMessages />;
+                                console.log(sideBar.type)
+                                return <StarredMessages/>;
 
                             case "SHARED":
-                                return <Media />;
+                                console.log(sideBar.type)
+                                return <Media/>;
 
                             default:
-                                break;
+                                return <Contact/>;
                         }
                     })()}
             </Stack>

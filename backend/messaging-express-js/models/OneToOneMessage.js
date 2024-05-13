@@ -33,6 +33,12 @@ const oneToOneMessageSchema = new mongoose.Schema({
     ]
 });
 
+// method to add one message to the schema
+// oneToOneMessageSchema.methods.addMessage = async function(message) {
+//     this.messages.push(message);
+//     return this.save();
+// }
+
 const OneToOneMessage = new mongoose.model("OneToOneMessage", oneToOneMessageSchema);
 
 module.exports = OneToOneMessage;

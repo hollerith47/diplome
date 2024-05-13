@@ -22,26 +22,16 @@ import {ChatFooter, ChatHeader} from "../../components/Chat";
 import useUserParam from "../../hooks/useUserParam";
 import {dispatch} from "../../redux/store";
 import {getUsers} from "../../redux/slices/authSlice";
+import {Chat_History} from "../../_data";
 
 const Conversation = ({isMobile, menu}) => {
     const dispatch = useDispatch();
 
-    const {conversations, current_messages} = useSelector(
-        (state) => state.conversation.direct_chat
-    );
-    const {room_id} = useSelector((state) => state.app);
+    const { current_messages } = useSelector(store => store.messages.chat);
 
     useEffect(() => {
-        const current = conversations.find((el) => el?.id === room_id);
+    }, [current_messages]);
 
-        socket.emit("get_messages", {conversation_id: current?.id}, (data) => {
-            // data => list of messages
-            console.log(data, "List of messages");
-            dispatch(FetchCurrentMessages({messages: data}));
-        });
-
-        dispatch(SetCurrentConversation(current));
-    }, []);
     return (
         <Box p={isMobile ? 1 : 3} sx={{ minHeight: "100vh"}}>
             <Stack spacing={3}>
@@ -85,7 +75,6 @@ const Conversation = ({isMobile, menu}) => {
                                         <TextMsg el={el} menu={menu} key={idx}/>
                                     );
                             }
-
                         default:
                             return <></>;
                     }
@@ -99,31 +88,12 @@ const ChatComponent = () => {
     const isMobile = useResponsive("between", "md", "xs", "sm");
     const theme = useTheme();
     const messageListRef = useRef(null);
-    const { current_messages} = useSelector((state) => state.conversation.direct_chat);
+    const { current_messages, current_conversation } = useSelector(store => store.messages.chat);
 
     useEffect(() => {
         // Scroll to the bottom of the message list when new messages are added
         messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
-    }, [current_messages]);
-
-    // just for me
-    // const {sidebar} = useSelector((store) => store.app);
-    // const {allUsers} = useSelector((store) => store.auth);
-    // const userId = useUserParam();
-
-    // get user id from search query
-    // const userData = allUsers.find(user => user._id === userId);
-
-    const location = useLocation();
-    const isApp = location.pathname === "/app"
-
-    // useEffect(() => {
-    //     return () => {
-    //         dispatch(getUsers())
-    //     };
-    // }, []);
-
-    // till here
+    }, [current_messages, current_conversation]);
 
     return (
         <Stack
@@ -153,7 +123,6 @@ const ChatComponent = () => {
                     <Conversation menu={true} isMobile={isMobile} />
                 </SimpleBarStyle>
             </Box>
-
             {/*  */}
             <ChatFooter />
         </Stack>

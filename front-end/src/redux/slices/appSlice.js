@@ -119,7 +119,6 @@ const slice = createSlice({
             state.room_id = action.payload.room_id;
         },
         openSnackBar(state, action) {
-            console.log(action.payload);
             state.snackbar.open = true;
             state.snackbar.severity = action.payload.severity;
             state.snackbar.message = action.payload.message;

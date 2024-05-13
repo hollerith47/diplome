@@ -116,7 +116,9 @@ const slice = createSlice({
             })
             .addCase(getUsers.fulfilled, (state, {payload})=> {
                 state.isLoading = false;
-                state.allUsers = payload.filter(user => user._id !== user_id);
+                console.log("users payload");
+                console.log(payload)
+                state.allUsers = payload;
             })
             .addCase(getUsers.rejected, state =>{
                 state.isLoading = false;

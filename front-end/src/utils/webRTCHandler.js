@@ -175,7 +175,7 @@ export const removePeerConnection = (data) => {
         videoContainer.parentNode.removeChild(videoContainer);
 
         if (peers[socketId]) {
-            peers[socketId].destroy();
+            peers[socketId] = null;
         }
         delete peers[socketId];
     }

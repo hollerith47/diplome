@@ -10,10 +10,9 @@ import useResponsive from "../../hooks/useResponsive";
 
 const Header = () => {
     const dispatch = useDispatch();
-    const isMobile = useResponsive("between", "md", "xs", "sm");
     const theme = useTheme();
 
-    const {current_conversation} = useSelector((state) => state.conversation.direct_chat);
+    const {current_conversation} = useSelector(store => store.messages.chat);
 
     return (
         <>
@@ -39,21 +38,20 @@ const Header = () => {
                         <StyledBadge
                             overlap="circular"
                             anchorOrigin={{vertical: "bottom", horizontal: "right"}}
-                            variant="dot"
+                            variant={current_conversation.online ? "dot" : ""}
                         >
                             <Avatar alt={current_conversation?.name}
-                                    src={current_conversation?.image}/>
+                                    src={current_conversation?.img}/>
                         </StyledBadge>
                     </Box>
                     <Stack spacing={0.2}>
                         <Typography variant={"subtitle2"}>{current_conversation?.name}</Typography>
-                        <Typography variant={"caption"}>Online</Typography>
                     </Stack>
                 </Stack>
                 {/* btns */}
                 <Stack direction={"row"} spacing={3}>
                     {/*<IconButton><VideoCamera/></IconButton>*/}
-                    {/*<IconButton><Phone/></IconButton>*/}
+                    <IconButton><Phone/></IconButton>
                     <IconButton><MagnifyingGlass/></IconButton>
                     <Divider orientation={"vertical"} flexItem/>
                     <IconButton onClick={()=> dispatch(ToggleSidebar())}><CaretDown/></IconButton>

@@ -39,10 +39,7 @@ const loginAPI = async () => {
         });
 
         if (loginResponse.status === 200) {
-            console.log("Connection successful, user authenticated");
-            // Ici, je suppose que votre intention était de traiter la réponse...
-            // await upsertUser(loginResponse.data);
-
+            console.log("Connection successful, Express API authenticated");
             if (!token){
                 token = loginResponse.data.data.token;
             }
@@ -61,7 +58,7 @@ const loginAPI = async () => {
             }
         }
     } catch (error) {
-        console.error("Error: User not authenticated or another error occurred.", error);
+        console.error("Error while login express API");
         return false;
     }
 };
