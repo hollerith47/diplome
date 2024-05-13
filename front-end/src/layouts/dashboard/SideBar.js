@@ -57,10 +57,10 @@ const SideBar = () => {
     const theme = useTheme();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {sidebar} = useSelector((store) => store.app);
+    const {sideBar} = useSelector((store) => store.app);
     const {user} = useSelector((store) => store.auth);
 
-    const linkIndex = sidebar.linkSelected;
+    const linkIndex = sideBar?.linkSelected;
     // console.log(linkIndex, "selected link index")
 
     const [anchorEl, setAnchorEl] = React.useState(null);

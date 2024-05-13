@@ -35,7 +35,7 @@ const StarredMessages = () => {
                     >
                         <IconButton
                             onClick={() => {
-                                dispatch(UpdateSidebarType("CONTACT"));
+                                dispatch(UpdateSidebarType({type: "CONTACT"}));
                             }}
                         >
                             <ArrowLeft />

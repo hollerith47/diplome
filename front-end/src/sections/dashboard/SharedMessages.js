@@ -51,7 +51,7 @@ const Media = () => {
                     >
                         <IconButton
                             onClick={() => {
-                                dispatch(UpdateSidebarType("CONTACT"));
+                                dispatch(UpdateSidebarType({type: "CONTACT"}));
                             }}
                         >
                             <ArrowLeft />

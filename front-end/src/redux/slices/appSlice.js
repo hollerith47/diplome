@@ -3,7 +3,7 @@ import {createSlice} from "@reduxjs/toolkit";
 // import {dispatch} from "../store";
 
 const initialState = {
-    sidebar: {
+    sideBar: {
         open: false,
         type: "CONTACT", // can be CONTACT, STARRED MESSAGE, SHARED DATA
         linkSelected: 0,
@@ -85,13 +85,13 @@ const slice = createSlice({
     reducers: {
         // Toggle Sidebar
         ToggleSidebar(state, action) {
-            state.sidebar.open = !state.sidebar.open;
+            state.sideBar.open = !state.sideBar.open;
         },
         UpdateSidebarType(state, action) {
-            state.sidebar.type = action.payload.type;
+            state.sideBar.type = action.payload.type;
         },
         UpdateSidebarLink(state, action) {
-            state.sidebar.linkSelected = action.payload.linkSelected;
+            state.sideBar.linkSelected = action.payload.linkSelected;
         },
         updateIsRoomHost(state, action) {
             state.isRoomHost = action.payload

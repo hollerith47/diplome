@@ -19,7 +19,8 @@ const GeneralApp = () => {
 
     const theme = useTheme();
     const {allUsers} = useSelector(store => store.auth);
-    const { isChatActive, isSent } = useSelector(store => store.messages)
+    const { isChatActive, isSent } = useSelector(store => store.messages);
+    const {current_conversation} = useSelector(store => store.messages.chat);
     const usersArray = allUsers;
 
     const [openDialog, setOpenDialog] = useState(false);
@@ -76,7 +77,7 @@ const GeneralApp = () => {
             socket?.off("message_received");
             socket?.off('get_user_conversations');
         }
-    }, [openDialog]);
+    }, [openDialog, dispatch]);
 
     useEffect(() => {
         socket.emit('get_direct_conversation', {user_id: user._id});
@@ -107,7 +108,7 @@ const GeneralApp = () => {
                                 : theme.palette.background.paper,
                     }}
                 >
-                    {isChatActive !== null ? (
+                    {isChatActive && current_conversation !== null ? (
                         <ChatComponent/>
                     ) : (
                         <Stack
@@ -136,19 +137,16 @@ const GeneralApp = () => {
                     (() => {
                         switch (sideBar.type) {
                             case "CONTACT":
-                                console.log(sideBar.type)
                                 return <Contact/>;
 
                             case "STARRED":
-                                console.log(sideBar.type)
                                 return <StarredMessages/>;
 
                             case "SHARED":
-                                console.log(sideBar.type)
                                 return <Media/>;
 
                             default:
-                                return <Contact/>;
+                                break;
                         }
                     })()}
             </Stack>

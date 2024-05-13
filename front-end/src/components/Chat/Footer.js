@@ -1,21 +1,10 @@
 import {
     Box,
-    Fab,
     IconButton,
-    InputAdornment,
     Stack,
-    TextField,
-    Tooltip,
 } from "@mui/material";
 import {
-    Camera,
-    File,
-    Image,
-    LinkSimple,
     PaperPlaneTilt,
-    Smiley,
-    Sticker,
-    User,
 } from "phosphor-react";
 import {useTheme, styled} from "@mui/material/styles";
 import {useState, useRef} from "react";
@@ -27,12 +16,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {socket} from "../../socket";
 import {UpdateIsSent} from "../../redux/slices/messagesSlice";
 import ChatInput from "./ChatInput";
-
-
-
-
-
-
 
 function linkify(text) {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -69,7 +52,6 @@ const Footer = () => {
                 emoji +
                 value.substring(selectionEnd)
             );
-
             // Move the cursor to the end of the inserted emoji
             input.selectionStart = input.selectionEnd = selectionStart + 1;
         }

@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useRef} from "react";
 import {Fab, IconButton, InputAdornment, Stack, TextField, Tooltip} from "@mui/material";
 import { File, Image, LinkSimple, Smiley } from "phosphor-react";
 import {styled} from "@mui/material/styles";
@@ -17,12 +17,14 @@ const Actions = [
         icon: <Image size={24}/>,
         y: 102,
         title: "фото",
+        type: "image/*"
     },
     {
         color: "#0159b2",
         icon: <File size={24}/>,
         y: 172,
         title: "Файл/документ",
+        type: "application/*"
     },
 ];
 const ChatInput = ({openPicker, setOpenPicker, setValue, value, inputRef}) => {

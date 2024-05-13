@@ -192,7 +192,7 @@ const Contact = () => {
                         <Typography variant="subtitle2">Media, Links & Docs</Typography>
                         <Button
                             onClick={() => {
-                                dispatch(UpdateSidebarType("SHARED"));
+                                dispatch(UpdateSidebarType({type: "SHARED"}));
                             }}
                             endIcon={<CaretRight />}
                         >
@@ -219,7 +219,7 @@ const Contact = () => {
 
                         <IconButton
                             onClick={() => {
-                                dispatch(UpdateSidebarType("STARRED"));
+                                dispatch(UpdateSidebarType({type: "STARRED"}));
                             }}
                         >
                             <CaretRight />
