@@ -10,27 +10,12 @@ import {
     TextMsg,
     Timeline,
 } from "../../sections/dashboard/Conversation";
-import {useDispatch, useSelector} from "react-redux";
-import {
-    FetchCurrentMessages,
-    SetCurrentConversation,
-} from "../../redux/slices/conversationSlice";
-import {socket} from "../../socket";
-import {useLocation} from "react-router-dom";
+import {useSelector} from "react-redux";
 import {SimpleBarStyle} from "../../components/Scrollbar";
 import {ChatFooter, ChatHeader} from "../../components/Chat";
-import useUserParam from "../../hooks/useUserParam";
-import {dispatch} from "../../redux/store";
-import {getUsers} from "../../redux/slices/authSlice";
-import {Chat_History} from "../../_data";
 
 const Conversation = ({isMobile, menu}) => {
-    const dispatch = useDispatch();
-
     const { current_messages } = useSelector(store => store.messages.chat);
-
-    useEffect(() => {
-    }, [current_messages]);
 
     return (
         <Box p={isMobile ? 1 : 3} sx={{ minHeight: "100vh"}}>

@@ -1,69 +1,48 @@
-import React, {useEffect} from "react";
-import {Navigate, Outlet} from "react-router-dom";
-import {Box, Stack} from "@mui/material";
+import React, { useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { Box, Stack } from "@mui/material";
 import SideBar from "./SideBar";
-import {useDispatch, useSelector} from "react-redux";
-import {connectSocket, socket} from "../../socket";
-import {AddDirectConversation, AddDirectMessage, UpdateDirectConversation} from "../../redux/slices/conversationSlice";
-import {SelectConversation, showSnackBar} from "../../redux/slices/appSlice";
-import {fetchUserConversations} from "../../redux/slices/messagesSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getSocket, connectSocket } from "../../socket";
+import { showSnackBar } from "../../redux/slices/appSlice";
 
 const DashboardLayout = () => {
-    const {isLoggedIn, token} = useSelector(store => store.auth);
-    const {user} = useSelector(store => store.auth);
+    const { isLoggedIn, token } = useSelector(store => store.auth);
     const dispatch = useDispatch();
-    const {conversations, current_conversation} = useSelector(
-        (state) => state.conversation.direct_chat
-    );
 
     useEffect(() => {
-        if (isLoggedIn) {
-            window.onload = function () {
-                if (!window.location.hash) {
-                    window.location = window.location + '#loaded';
-                    window.location.reload();
-                }
-            };
-
-            if (!socket) {
-                connectSocket(token);
-            }
-
-
-            socket.on("unauthorized", (data) => {
-                dispatch(showSnackBar({
-                    open: true,
-                    message: "Reconnectez-vous",
-                    severity: "error",
-                }))
-            });
-            // Remove event
-            return () =>{
-                // socket?.off("start_chat");
-                // socket?.off("new_message");
-                socket?.off("unauthorized");
-                // socket?.off("message_sent");
-                // socket?.off("message_received");
-            }
-
-        }else{
-            return <Navigate to={"/landing"}/>
+        if (!isLoggedIn) {
+            return;
         }
 
-    }, [isLoggedIn, socket ]);
+        connectSocket(token);
+
+        const socket = getSocket();
+        if (socket) {
+            socket.on("unauthorized", () => {
+                dispatch(showSnackBar({
+                    open: true,
+                    message: "Session expired. Please log in again.",
+                    severity: "error",
+                }));
+            });
+
+            return () => {
+                socket.off("unauthorized");
+            };
+        }
+    }, [isLoggedIn, token, dispatch]);
 
     if (!isLoggedIn) {
-        return <Navigate to={"/landing"}/>
+        return <Navigate to="/landing" replace />;
     }
+
     return (
         <>
-            <Stack
-                direction="row"
-            >
-                {/*sidebar*/}
-                <SideBar/>
+            <Stack direction="row">
+                <SideBar />
                 <Box>
-                    <Outlet/>
+                    <Outlet />
                 </Box>
             </Stack>
         </>

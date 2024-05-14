@@ -4,7 +4,7 @@ import { Avatar, Box, Fade, Menu, MenuItem, Stack } from "@mui/material";
 
 import { Profile_Menu } from "../../_data";
 import { useDispatch, useSelector } from "react-redux";
-import { socket } from "../../socket";
+import { getSocket } from "../../socket";
 import { useNavigate } from "react-router-dom";
 import {logoutUser} from "../../redux/slices/authSlice";
 
@@ -14,6 +14,7 @@ const ProfileMenu = () => {
     const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const openMenu = Boolean(anchorEl);
+    const socket = getSocket();
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };

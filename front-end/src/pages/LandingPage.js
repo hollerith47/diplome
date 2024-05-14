@@ -21,11 +21,11 @@ const LandingPage = () => {
         <Stack sx={{mt:4}} spacing={5} direction={isDesktop ? "row" : "column"} >
             {/*left side */}
             <Stack pt={16} sx={{width: isDesktop ? "40%" : "100%"}} spacing={2} alignItems={isDesktop ? "" : "center"}>
-              <Typography variant={isDesktop ? "h2" : "h1"} color={"#407BFF"}>Instant Connect</Typography>
-              <Typography variant={isDesktop ? "h4" : "h5"}>Seamless chat for teams on the go.</Typography>
+              <Typography variant={isDesktop ? "h2" : "h1"} color={"#407BFF"}>Мгновенное Соединение</Typography>
+              <Typography variant={isDesktop ? "h4" : "h5"}>Бесшовный чат для команд в движении.</Typography>
               <Stack sx={{backgroundColor:"#407BFF",width: "max-content", borderRadius: 1}}>
                 <Button size={"large"} variant={"contained"}>
-                  <Link to={"/auth/login"} component={RouterLink} underline={"none"} color={"inherit"}>Login/Signup</Link>
+                  <Link to={"/auth/login"} component={RouterLink} underline={"none"} color={"inherit"}>Вход/Регистрация</Link>
                 </Button>
               </Stack>
             </Stack>

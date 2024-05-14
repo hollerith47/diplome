@@ -28,7 +28,6 @@ export const signUpThunk = async (data, thunkAPI) => {
     const axiosInstance = createAxiosInstance();
     try {
         const response = await axiosInstance.post("/register", {...data});
-        // console.log(response._data._data);
         return response.data.data;
     } catch (error) {
         console.error("Signup error", error);
@@ -110,9 +109,6 @@ export const getAllUsersThunk = async (_, thunkAPI) => {
         const axiosInstance = createAxiosInstance(token);
         const response = await axiosInstance.get(`/users`);
         let users = response.data.data;
-        // users.filter(user => user.email !== actualUserEmail )
-        // console.log("actual user email", actualUserEmail);
-        // console.log(users)
         for (let user of users) {
             const getUserData = await axios.post(`${BASE_NODE_API_URL}/get-user-id`, {email: user.email})
             user["_id"] = getUserData.data["_id"];

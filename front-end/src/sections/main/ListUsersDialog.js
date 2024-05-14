@@ -5,10 +5,9 @@ import {Chat, MagnifyingGlass} from "phosphor-react";
 import {SimpleBarStyle} from "../../components/Scrollbar";
 import AvatarWithOnline from "../../components/ChatElements/AvatarWithOnline";
 import ShowDialog from "../../components/dialog/ShowDialog";
-import {socket} from "../../socket";
+import {getSocket} from "../../socket";
 import {useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {SetCurrentConversation} from "../../redux/slices/conversationSlice";
+import { useSelector} from "react-redux";
 
 const ListUsersDialogHeader = ({setSearchTerm}) => (
     <Stack sx={{flexGrow: 1}}>
@@ -29,14 +28,14 @@ const CreateCallDialogBody = ({usersList, searchTerm, handleClose}) => {
     const navigate = useNavigate();
     const { user } = useSelector(store => store.auth);
     const user_id = user._id;
-    const dispatch = useDispatch();
-    const filteredUsers = usersList.filter(user =>
+    const filteredUsers = usersList?.filter(user =>
         user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.last_name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    );
+
+    const socket = getSocket();
     const handleBeginConversation = (to, from) => {
         socket.emit('start_conversation', {to: to, from: from});
-        dispatch()
         navigate(`/app`);
         handleClose();
     }

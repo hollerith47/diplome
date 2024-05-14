@@ -47,13 +47,13 @@ const Register = () => {
                             textAlign: "center"
                         }}
                     >
-                        {"By signing up, I agree to "}
+                        {"Регистрируясь, я соглашаюсь с "}
                         <Link underline={"always"} color={"text.primary"}>
-                            Terms of Service
+                            условиями обслуживания
                         </Link>
-                        {" and "}
+                        {" и "}
                         <Link underline={"always"} color={"text.primary"}>
-                            the Privacy Policy
+                            политикой конфиденциальности
                         </Link>
                     </Typography>
                 </Stack>
@@ -61,7 +61,7 @@ const Register = () => {
                 {isDesktop &&
                     <Stack pl={4} sx={{width: "50%", borderLeft: "1px solid rgba(0, 0, 0, 0.25)"}} spacing={2}>
                         <Stack direction={"row"} justifyContent={"space-between"}>
-                            <Typography variant={"h4"}>Welcome!</Typography>
+                            <Typography variant={"h4"}>Добро пожаловать!</Typography>
                             <Stack sx={{alignSelf: 'flex-end'}}>
                                 <CLoseDialogIcon handleCloseDialog={handleCloseRegisterDialog}/>
                             </Stack>
@@ -70,18 +70,18 @@ const Register = () => {
                             <img style={{height: "270px", width: "360px"}} src={img_right} alt=""/>
                         </Stack>
                         <Stack pt={3} direction={"row"} spacing={0.5} alignItems={"center"} justifyContent={"center"}>
-                            <Typography variant={"body2"}>Already have an account?</Typography>
+                            <Typography variant={"body2"}>У вас уже есть аккаунт?</Typography>
                             <Link to={"/auth/login"} component={RouterLink}>
-                                log in now
+                                Войти сейчас
                             </Link>
                         </Stack>
                     </Stack>
                 }
                 {!isDesktop &&
                     <Stack direction={"row"} spacing={0.5} alignItems={"center"} justifyContent={"center"}>
-                        <Typography variant={"body2"}>Already have an account?</Typography>
+                        <Typography variant={"body2"}>У вас уже есть аккаунт?</Typography>
                         <Link to={"/auth/login"}  component={RouterLink}>
-                            log in now
+                            Войти сейчас
                         </Link>
                     </Stack>
                 }

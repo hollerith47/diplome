@@ -6,7 +6,6 @@ import {Gear} from "phosphor-react";
 import AntSwitch from "../../components/AntSwitch";
 import {useDispatch, useSelector} from "react-redux";
 import {UpdateSidebarLink} from "../../redux/slices/appSlice";
-import {faker} from "@faker-js/faker";
 import {useTheme} from "@mui/material/styles";
 import useSettings from "../../hooks/useSettings";
 import {useNavigate} from "react-router-dom";
@@ -61,7 +60,6 @@ const SideBar = () => {
     const {user} = useSelector((store) => store.auth);
 
     const linkIndex = sideBar?.linkSelected;
-    // console.log(linkIndex, "selected link index")
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -193,9 +191,9 @@ const SideBar = () => {
                                         }
                                     }}>
                                         <Stack
-                                            direction={"row"} sx={{width: 100}}
-                                            alignItems={"center"}
-                                            justifyContent={"space-between"}
+                                            direction="row" sx={{width: 100}}
+                                            alignItems="center"
+                                            justifyContent="space-between"
                                         >
                                             <span>{item.title}</span>
                                             {item.icon}

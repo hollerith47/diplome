@@ -1,12 +1,11 @@
 import React from "react";
 import { Box, Badge, Stack, Avatar, Typography } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
-import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { SelectConversation } from "../redux/slices/appSlice";
-import {socket} from "../socket";
+import {getSocket} from "../socket";
 import {setCurrentConversation, setIsChatActive} from "../redux/slices/messagesSlice";
 
+const socket = getSocket();
 const truncateText = (string, n) => {
   return string?.length > n ? `${string?.slice(0, n)}...` : string;
 };
@@ -72,7 +71,6 @@ const ChatElement = ({ img, name, msg, time, unread, online, _id }) => {
       onClick={() => {
           socket.emit("start_conversation", {from: user_id, to:_id});
           dispatch(setCurrentConversation(current_conversation_user_info));
-          // setIsChatActive
           dispatch(setIsChatActive())
       }}
       sx={{

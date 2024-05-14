@@ -9,13 +9,15 @@ import {useDispatch, useSelector} from "react-redux";
 import StarredMessages from "../../sections/dashboard/StarredMessages";
 import Media from "../../sections/dashboard/SharedMessages";
 import ListUsersDialog from "../../sections/main/ListUsersDialog";
-import {socket} from "../../socket";
+import {getSocket} from "../../socket";
 import {showSnackBar} from "../../redux/slices/appSlice";
 import {fetchUserConversations, setCurrentMessages, UpdateIsSent} from "../../redux/slices/messagesSlice";
 
 const GeneralApp = () => {
     const {user} = useSelector(store => store.auth);
     const dispatch = useDispatch();
+
+    const socket = getSocket();
 
     const theme = useTheme();
     const {allUsers} = useSelector(store => store.auth);

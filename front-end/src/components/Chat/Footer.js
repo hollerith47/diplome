@@ -6,14 +6,14 @@ import {
 import {
     PaperPlaneTilt,
 } from "phosphor-react";
-import {useTheme, styled} from "@mui/material/styles";
+import {useTheme} from "@mui/material/styles";
 import {useState, useRef} from "react";
 import useResponsive from "../../hooks/useResponsive";
 
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import {useDispatch, useSelector} from "react-redux";
-import {socket} from "../../socket";
+import {getSocket} from "../../socket";
 import {UpdateIsSent} from "../../redux/slices/messagesSlice";
 import ChatInput from "./ChatInput";
 
@@ -39,6 +39,7 @@ const Footer = () => {
     const [openPicker, setOpenPicker] = useState(false);
     const [value, setValue] = useState("");
     const inputRef = useRef(null);
+    const socket = getSocket();
 
     function handleEmojiClick(emoji) {
         const input = inputRef.current;

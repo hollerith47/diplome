@@ -5,7 +5,7 @@ import NameAndMessage from "./NameAndMessage";
 import AvatarWithOnline from "./AvatarWithOnline";
 import TimeAndUnread from "./TimeAndUnread";
 
-const ChatElementComponent = ({id, name, img, msg, time, unread, online, current_conv}) => {
+const ChatElementComponent = ({_id, name, img, msg, time, unread, online}) => {
     const theme = useTheme();
 
     return (

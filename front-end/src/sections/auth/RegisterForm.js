@@ -106,23 +106,23 @@ const RegisterForm = () => {
                 {!isOtpSucceed &&
                     isSubmitSuccessful &&
                     <Alert security="success">
-                        {isSucceed ? "check your email and provide the otp code" : "form submitted successfully"}
+                        {isSucceed ? "Проверьте свою электронную почту и введите полученный одноразовый пароль (OTP)" : "Форма успешно отправлена"}
                     </Alert>
                 }
 
                 {!isSucceed &&
                     <Stack direction={{xs: "column", sm: "row"}} spacing={2}>
-                        <RHFTextField name={"first_name"} label={"First Name"}/>
-                        <RHFTextField name={"last_name"} label={"Last Name"}/>
+                        <RHFTextField name={"first_name"} label={"Имя"}/>
+                        <RHFTextField name={"last_name"} label={"Фамилия"}/>
                     </Stack>
                 }
 
-                <RHFTextField name={"email"} label="Email address"/>
+                <RHFTextField name={"email"} label="Адрес электронной почты"/>
                 {!isSucceed ?
                     <>
                         <RHFTextField
                             name={"password"}
-                            label="Password"
+                            label="Пароль"
                             type={showPassword ? 'text' : "password"}
                             InputProps={{
                                 endAdornment: (
@@ -136,7 +136,7 @@ const RegisterForm = () => {
                         />
                         <RHFTextField
                             name={"password_confirmation"}
-                            label="Confirm Password"
+                            label="Подтвердите пароль"
                             type={showPassword ? 'text' : "password"}
                             InputProps={{
                                 endAdornment: (
@@ -170,7 +170,7 @@ const RegisterForm = () => {
                     }
                 }}
             >
-                {isSucceed ? "Confirm Email" : "Create Account"}
+                {isSucceed ? "Подтвердите адрес электронной почты" : "Создать аккаунт"}
             < /Button>
         </FormProvider>
     );

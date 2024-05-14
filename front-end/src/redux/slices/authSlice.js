@@ -116,8 +116,6 @@ const slice = createSlice({
             })
             .addCase(getUsers.fulfilled, (state, {payload})=> {
                 state.isLoading = false;
-                console.log("users payload");
-                console.log(payload)
                 state.allUsers = payload;
             })
             .addCase(getUsers.rejected, state =>{

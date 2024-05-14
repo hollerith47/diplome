@@ -12,17 +12,17 @@ import {
 const Profile_Menu = [
     {
         key: 1,
-        title: "Profile",
+        title: "Профиль",
         icon: <User/>,
     },
     {
         key: 2,
-        title: "Settings",
+        title: "Настройки",
         icon: <Gear/>,
     },
     {
         key: 3,
-        title: "Logout",
+        title: "Выйти",
         icon: <SignOut/>,
     },
 ];

@@ -19,11 +19,8 @@ import { SHARED_DOCS, SHARED_LINKS } from "../../_data";
 
 const Media = () => {
     const dispatch = useDispatch();
-
     const theme = useTheme();
-
     const isDesktop = useResponsive("up", "md");
-
     const [value, setValue] = React.useState(0);
 
     const handleChange = (event, newValue) => {
@@ -56,14 +53,14 @@ const Media = () => {
                         >
                             <ArrowLeft />
                         </IconButton>
-                        <Typography variant="subtitle2">Shared</Typography>
+                        <Typography variant="subtitle2">Поделенное</Typography>
                     </Stack>
                 </Box>
 
                 <Tabs value={value} onChange={handleChange} centered>
-                    <Tab label="Media" />
-                    <Tab label="Links" />
-                    <Tab label="Docs" />
+                    <Tab label="Медиа" />
+                    <Tab label="Ссылки" />
+                    <Tab label="Документы" />
                 </Tabs>
                 <Stack
                     sx={{

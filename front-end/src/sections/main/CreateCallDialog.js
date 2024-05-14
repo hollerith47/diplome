@@ -1,45 +1,43 @@
-import React from 'react';
-import {Stack} from "@mui/material";
-import {Search, SearchIconWrapper, StyledInputBase} from "../../components/Search";
-import {MagnifyingGlass} from "phosphor-react";
+import React, {useState} from 'react';
 import CallLogElement from "../../components/CallLogElement";
 import {SimpleBarStyle} from "../../components/Scrollbar";
-import {CALL_LOG} from "../../_data";
 import ShowDialog from "../../components/dialog/ShowDialog";
+import {useSelector} from "react-redux";
+import SearchBar from "../../components/SearchBar";
 
-const CreateCallDialogHeader = () =>(
-    <Stack sx={{flexGrow: 1}}>
-        <Search bgColor={"#EAF2FE"}>
-            <SearchIconWrapper>
-                <MagnifyingGlass color="#709CE6"/>
-            </SearchIconWrapper>
-            <StyledInputBase
-                placeholder="Search…"
-                inputProps={{"aria-label": "search"}}
-            />
-        </Search>
-    </Stack>
-)
-
-const CreateCallDialogBody = () => {
+const CreateCallDialogBody = ({usersList, searchTerm}) => {
     const appId = 510839379;
     const server = "wss://webliveroom510839379-api.coolzcloud.com/ws";
+
+    const filteredUsers = usersList?.filter(user =>
+        user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.last_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    // console.log("filteredUsers", filteredUsers);
     return (
         <SimpleBarStyle timeout={500} clickOnTrack={false}>
-            {CALL_LOG.map((item)=>(
-                <CallLogElement isBordered={true} {...item} isDialogLog={true}/>
+            {filteredUsers.map((item)=>(
+                <CallLogElement isBordered={true} userData={item} logInfo={CallLogElement} isDialogLog={true}/>
             ))}
         </SimpleBarStyle>
     )
 }
 
 const CreateCallDialog = ({open, handleClose}) => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const {allUsers} = useSelector(store => store.auth);
+
+
   return (
     <>
         <ShowDialog
             handleClose={handleClose}
-            header={<CreateCallDialogHeader />}
-            content={<CreateCallDialogBody />}
+            header={<SearchBar isDialog={true} setSearchTerm={setSearchTerm} />}
+            content={
+            <CreateCallDialogBody
+                searchTerm={searchTerm}
+                usersList={allUsers}
+            />}
             open={open}
         />
     </>

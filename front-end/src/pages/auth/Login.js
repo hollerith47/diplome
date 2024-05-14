@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Grid, Link, Stack, Typography} from "@mui/material";
+import {Link, Stack, Typography} from "@mui/material";
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
 
 import img_left from "../../assets/Images/login_left_img.png";
@@ -28,15 +28,15 @@ const Login = () => {
           {isDesktop &&
             <Stack sx={{width: "50%", borderRight: "1px solid rgba(0, 0, 0, 0.25)"}} spacing={2}>
               <Stack>
-                <Typography variant={"h4"}>Welcome!</Typography>
+                <Typography variant={"h4"}>Добро пожаловать!</Typography>
               </Stack>
               <Stack>
                 <img style={{height: "270px", width: "360px"}} src={img_left} alt=""/>
               </Stack>
               <Stack direction={"row"} spacing={0.5} alignItems={"center"}>
-                <Typography variant={"body2"}>Not a member yet?</Typography>
+                <Typography variant={"body2"}>не зарегистрированы?</Typography>
                 <Link to={"/auth/register"} component={RouterLink}>
-                  Register now
+                    Зарегистрируйтесь сейчас
                 </Link>
               </Stack>
             </Stack>
@@ -45,7 +45,7 @@ const Login = () => {
           {/*right side*/}
           <Stack sx={{flexGrow: 1}}>
             <Stack direction={"row"} justifyContent={"space-between"}>
-              <Typography variant={"h4"}>Log In</Typography>
+              <Typography variant={"h4"}>Авторизация</Typography>
               <Stack sx={{ alignSelf: 'flex-end' }}>
                 <CLoseDialogIcon handleCloseDialog={handleCloseLoginDialog} />
               </Stack>
@@ -57,9 +57,9 @@ const Login = () => {
           </Stack>
           {!isDesktop &&
             <Stack direction={"row"} spacing={0.5} alignItems={"center"} justifyContent={"center"}>
-              <Typography variant={"body2"}>Not a member yet?</Typography>
+              <Typography variant={"body2"}>не зарегистрированы?</Typography>
               <Link to={"/auth/register"} component={RouterLink}>
-                Register now
+                  Зарегистрируйтесь сейчас
               </Link>
             </Stack>
           }

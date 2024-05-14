@@ -19,8 +19,8 @@ const LoginForm = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const LoginSchema = Yup.object().shape({
-        email: Yup.string().required("Email is required").email("Email must be a valid email address"),
-        password: Yup.string().required("Password is required"),
+        email: Yup.string().required("Требуется адрес электронной почты").email("Адрес электронной почты должен быть действительным"),
+        password: Yup.string().required("Требуется пароль"),
     });
 
     const defaultValues = {
@@ -43,7 +43,7 @@ const LoginForm = () => {
         try {
             // submit _data to server api
             const response = await dispatch(loginUser(data))
-            console.log(response)
+            // console.log(response)
             if (response.type === "user/login/fulfilled"){
                 setTimeout(() => {
                     navigate("/app");
@@ -70,10 +70,10 @@ const LoginForm = () => {
                 {isSubmitting && <SubmittingLoader />}
                 {isSubmitSuccessful && <Alert severity="success">{"form submitted successfully"}</Alert>}
 
-                <RHFTextField name={"email"} label="Email address"/>
+                <RHFTextField name={"email"} label="Адрес электронной почты"/>
                 <RHFTextField
                     name={"password"}
-                    label="Password"
+                    label="Пароль"
                     type={showPassword ? 'text' : "password"}
                     InputProps={{
                         endAdornment: (
@@ -94,7 +94,7 @@ const LoginForm = () => {
                     color={"inherit"}
                     underline={"always"}
                 >
-                    Forgot Password?
+                    Забыли пароль?
                 </Link>
             </Stack>
             <Button
@@ -113,7 +113,7 @@ const LoginForm = () => {
                     }
                 }}
             >
-                Log in now
+                Войти сейчас
             < /Button>
         </FormProvider>
     );

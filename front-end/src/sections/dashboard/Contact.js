@@ -44,15 +44,15 @@ const BlockDialog = ({ open, handleClose }) => {
             onClose={handleClose}
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle>Block this contact</DialogTitle>
+            <DialogTitle>Заблокировать этот контакт</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
-                    Are you sure you want to block this Contact?
+                    Вы уверены, что хотите заблокировать этот контакт?
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleClose}>Yes</Button>
+                <Button onClick={handleClose}>Отмена</Button>
+                <Button onClick={handleClose}>Да</Button>
             </DialogActions>
         </Dialog>
     );
@@ -67,15 +67,15 @@ const DeleteChatDialog = ({ open, handleClose }) => {
             onClose={handleClose}
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle>Delete this chat</DialogTitle>
+            <DialogTitle>Удалить этот чат</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
-                    Are you sure you want to delete this chat?
+                    Вы уверены, что хотите удалить этот чат?
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleClose}>Yes</Button>
+                <Button onClick={handleClose}>Отмена</Button>
+                <Button onClick={handleClose}>Да</Button>
             </DialogActions>
         </Dialog>
     );
@@ -120,7 +120,7 @@ const Contact = () => {
                         justifyContent="space-between"
                         spacing={3}
                     >
-                        <Typography variant="subtitle2">Contact Info</Typography>
+                        <Typography variant="subtitle2">Информация о контакте</Typography>
                         <IconButton
                             onClick={() => {
                                 dispatch(ToggleSidebar());
@@ -150,9 +150,6 @@ const Contact = () => {
                             <Typography variant="article" fontWeight={600}>
                                 {current_conversation?.name}
                             </Typography>
-                            <Typography variant="body2" fontWeight={500}>
-                                {"+91 62543 28 739"}
-                            </Typography>
                         </Stack>
                     </Stack>
                     <Stack
@@ -165,19 +162,19 @@ const Contact = () => {
                                 <Phone />
                             </IconButton>
 
-                            <Typography variant="overline">Voice</Typography>
+                            <Typography variant="overline">Голосование</Typography>
                         </Stack>
                         <Stack alignItems={"center"} spacing={1}>
                             <IconButton>
                                 <VideoCamera />
                             </IconButton>
-                            <Typography variant="overline">Video</Typography>
+                            <Typography variant="overline">Видео</Typography>
                         </Stack>
                     </Stack>
                     <Divider />
                     <Stack spacing={0.5}>
                         <Typography variant="article" fontWeight={600}>
-                            About
+                            О себе
                         </Typography>
                         <Typography variant="body2" fontWeight={500}>
                             {current_conversation?.about}
@@ -189,7 +186,7 @@ const Contact = () => {
                         alignItems="center"
                         justifyContent={"space-between"}
                     >
-                        <Typography variant="subtitle2">Media, Links & Docs</Typography>
+                        <Typography variant="subtitle2">Медиа, Ссылки и Документы</Typography>
                         <Button
                             onClick={() => {
                                 dispatch(UpdateSidebarType({type: "SHARED"}));
@@ -214,7 +211,7 @@ const Contact = () => {
                     >
                         <Stack direction="row" alignItems="center" spacing={2}>
                             <Star size={21} />
-                            <Typography variant="subtitle2">Starred Messages</Typography>
+                            <Typography variant="subtitle2">Избранные сообщения</Typography>
                         </Stack>
 
                         <IconButton
@@ -233,13 +230,13 @@ const Contact = () => {
                     >
                         <Stack direction="row" alignItems="center" spacing={2}>
                             <Bell size={21} />
-                            <Typography variant="subtitle2">Mute Notifications</Typography>
+                            <Typography variant="subtitle2">Отключить уведомления</Typography>
                         </Stack>
 
                         <AntSwitch />
                     </Stack>
                     <Divider />
-                    <Typography variant="body2">1 group in common</Typography>
+                    <Typography variant="body2">1 общая группа</Typography>
                     <Stack direction="row" alignItems={"center"} spacing={2}>
                         <Avatar src={faker.image.imageUrl()} alt={faker.name.fullName()} />
                         <Stack direction="column" spacing={0.5}>
@@ -259,7 +256,7 @@ const Contact = () => {
                             startIcon={<Prohibit />}
                             variant="outlined"
                         >
-                            Block
+                            Блокировать
                         </Button>
                         <Button
                             onClick={() => {
@@ -269,7 +266,7 @@ const Contact = () => {
                             startIcon={<Trash />}
                             variant="outlined"
                         >
-                            Delete
+                            Удалить
                         </Button>
                     </Stack>
                 </Stack>

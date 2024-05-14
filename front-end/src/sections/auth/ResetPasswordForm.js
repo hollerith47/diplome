@@ -12,7 +12,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {forgotPassword, resetUserPassword} from "../../redux/slices/authSlice";
 import {useNavigate} from "react-router-dom";
 import RHFOtpCodes from "../../components/hook-form/RHFOtpCodes";
-// import {useNavigate} from "react-router-dom";
 
 const ResetPasswordForm = () => {
     const theme = useTheme();
@@ -25,19 +24,19 @@ const ResetPasswordForm = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     // const navigate = useNavigate();
     const ResetSchema = Yup.object().shape({
-        email: Yup.string().required("Email is required").email("Email must be a valid email address"),
+        email: Yup.string().required("Требуется адрес электронной почты").email("Адрес электронной почты должен быть действительным"),
     });
 
     const ResetSchema_with_password = Yup.object().shape({
-        email: Yup.string().required("Email is required").email("Email must be a valid email address"),
-        password: Yup.string().required("New password is required"),
-        code1: Yup.string().required("OTP is required"),
-        code2: Yup.string().required("OTP is required"),
-        code3: Yup.string().required("OTP is required"),
-        code4: Yup.string().required("OTP is required"),
-        code5: Yup.string().required("OTP is required"),
-        code6: Yup.string().required("OTP is required"),
-        password_confirmation: Yup.string().required("Confirm Password is required").oneOf([Yup.ref("password"), null], "Confirm Password not match with password"),
+        email: Yup.string().required("Требуется адрес электронной почты").email("Адрес электронной почты должен быть действительным"),
+        password: Yup.string().required("Новый пароль обязателен"),
+        code1: Yup.string().required("OTP обязателен"),
+        code2: Yup.string().required("OTP обязателен"),
+        code3: Yup.string().required("OTP обязателен"),
+        code4: Yup.string().required("OTP обязателен"),
+        code5: Yup.string().required("OTP обязателен"),
+        code6: Yup.string().required("OTP обязателен"),
+        password_confirmation: Yup.string().required("Подтверждение пароля обязательно").oneOf([Yup.ref("password"), null], "Подтверждение пароля не совпадает с паролем"),
     });
 
     const defaultValues = {
@@ -71,7 +70,7 @@ const ResetPasswordForm = () => {
                 const response = await dispatch(resetUserPassword(dataToSend));
                 if (response.type === "user/reset-password/rejected") {
                     setError("afterSubmit", {
-                        message: response.payload ? response.payload : "Email not registered yet",
+                        message: response.payload ? response.payload : "Электронная почта еще не зарегистрирована",
                     })
                 }
                 if (response.type === "user/reset-password/fulfilled") {
@@ -98,7 +97,7 @@ const ResetPasswordForm = () => {
             // reset();
 
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             reset();
             setError("afterSubmit", {
                 ...error,
@@ -114,19 +113,18 @@ const ResetPasswordForm = () => {
                 {isSubmitting && <SubmittingLoader/>}
                 {isSubmitSuccessful &&
                     <Alert security="success">
-                        {isSucceed ? "check your email and provide the otp code" : "form submitted successfully"}
+                        {isSucceed ? "Проверьте свою электронную почту и введите полученный одноразовый пароль (OTP)" : "Форма успешно отправлена"}
                     </Alert>
                 }
 
-                <RHFTextField name={"email"} label="Email address"/>
+                <RHFTextField name={"email"} label="Адрес электронной почты"/>
                 {isSucceed &&
                     <>
-                        {/*  TODO: remplace this Otp by 6 digits like RHFCodes */}
                         {/*<RHFTextField name={"otp"} label="Provide the email code confirmation"/>*/}
                         <RHFOtpCodes keyName={"code"} inputs={inputs} />
                         <RHFTextField
                             name={"password"}
-                            label="New Password"
+                            label="Новый пароль"
                             type={showNewPassword ? 'text' : "password"}
                             InputProps={{
                                 endAdornment: (
@@ -141,7 +139,7 @@ const ResetPasswordForm = () => {
 
                         <RHFTextField
                             name={"password_confirmation"}
-                            label="Confirm Password"
+                            label="Подтвердите пароль"
                             type={showConfirmPassword ? 'text' : "password"}
                             InputProps={{
                                 endAdornment: (
@@ -172,7 +170,7 @@ const ResetPasswordForm = () => {
                         }
                     }}
                 >
-                    {!isSucceed ? "Send Request" : "Reset Password"}
+                    {!isSucceed ? "Отправить запрос" : "Сбросить пароль"}
                 < /Button>
             </Stack>
         </FormProvider>
