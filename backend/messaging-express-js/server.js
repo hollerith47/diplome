@@ -137,6 +137,11 @@ io.on('connection', async (socket) => {
         await User.findOneAndUpdate({socket_id : socket.id}, {status: "Offline", socket_id: ""});
         console.log(`user disconnected socket ID: ${socket.id}`);
     });
+
+    socket.on("end", async ({user_id})=>{
+        await User.findOneAndUpdate({_id : user_id}, {status: "Offline", socket_id: ""});
+        console.log(`user disconnected with the end event socket ID: ${socket.id}`);
+    })
 })
 
 const fileMessageHandler = (data, socket) => {
