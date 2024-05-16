@@ -13,9 +13,8 @@ import useResponsive from "../../hooks/useResponsive";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import {useDispatch, useSelector} from "react-redux";
-import {getSocket} from "../../socket";
-import {UpdateIsSent} from "../../redux/slices/messagesSlice";
 import ChatInput from "./ChatInput";
+import {checkAndSendText} from "../../redux/slices/messagesSlice";
 
 function linkify(text) {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -39,7 +38,6 @@ const Footer = () => {
     const [openPicker, setOpenPicker] = useState(false);
     const [value, setValue] = useState("");
     const inputRef = useRef(null);
-    const socket = getSocket();
 
     function handleEmojiClick(emoji) {
         const input = inputRef.current;
@@ -58,20 +56,13 @@ const Footer = () => {
         }
     }
 
-    function sendMessage() {
+    async function sendMessage() {
         if (value.trim() !== "") {
             const messageContent = linkify(value);
-            // check if toxic or not api then send
-            // TODO: TOXIC api here
+            const type = containsUrl(value) ? "Link" : "Text"
 
-            socket.emit("text_message", {
-                message: messageContent,
-                from: user_id,
-                to: current_conversation?._id,
-                type: containsUrl(value) ? "Link" : "Text",
-            });
-            setValue(""); // Réinitialise l'input après l'envoi
-            dispatch(UpdateIsSent());
+            dispatch(checkAndSendText({text: messageContent, userId: user_id, conversationId: current_conversation?._id, type: type }))
+            setValue("");
         }
     }
 

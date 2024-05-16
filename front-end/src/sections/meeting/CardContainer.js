@@ -1,4 +1,4 @@
-import {Button, Card, Stack} from "@mui/material";
+import { Card } from "@mui/material";
 import useResponsive from "../../hooks/useResponsive";
 
 const CardContainer = ({children}) => {
@@ -12,7 +12,7 @@ const CardContainer = ({children}) => {
                     alignItems: "center",
                     justifyContent: "center",
                     p: 4,
-                    width: isDesktop ? 320 : "auto",
+                    width: isDesktop ? 420 : "auto",
                     // py: 8,
                 }}
             >

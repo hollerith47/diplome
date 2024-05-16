@@ -11,7 +11,7 @@ import {useEffect} from "react";
 import {connectWithSocketServer} from "./utils/wss";
 import {closeSnackBar} from "./redux/slices/appSlice";
 
-const vertical = "bottom";
+const vertical = "top";
 const horizontal = "center";
 
 function App() {
@@ -67,8 +67,7 @@ function App() {
                 ) : (<></>)
             }
         </>
-    )
-        ;
+    );
 }
 
 export default App;

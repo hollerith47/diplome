@@ -81,7 +81,7 @@ const Call = () => {
                             sx={{flexGrow: 1, height: "100%", overflowX: "hidden", overflowY: "scroll",}}
                         >
                             <SimpleBarStyle timeout={500} clickOnTrack={false}>
-                                {filteredUsers.map((item) => (
+                                {filteredUsers?.map((item) => (
                                     <CallLogElement userData={item} logInfo={CALL_LOG}/>
                                 ))}
                             </SimpleBarStyle>

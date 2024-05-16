@@ -1,23 +1,25 @@
-import { useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Button } from '@mui/material';
 //
 import Iconify from '../../Iconify';
+import {useDispatch, useSelector} from "react-redux";
+import {updateFullScreenState} from "../../../redux/slices/appSlice";
 
 // ----------------------------------------------------------------------
 
 export default function SettingFullscreen() {
-  const [fullscreen, setFullscreen] = useState(false);
+  const { fullscreen } = useSelector(store => store.app);
+  const dispatch = useDispatch();
 
   const toggleFullScreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-      setFullscreen(true);
-    } else if (document.exitFullscreen) {
-      document.exitFullscreen();
-      setFullscreen(false);
-    }
+      if (!fullscreen) {
+          document.documentElement.requestFullscreen();
+          dispatch(updateFullScreenState())
+      } else {
+          document.exitFullscreen();
+          dispatch(updateFullScreenState())
+      }
   };
 
   return (
@@ -35,7 +37,7 @@ export default function SettingFullscreen() {
         }),
       }}
     >
-      {fullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+      {fullscreen ? 'Выйти из полноэкранного' : 'Полноэкранный'}
     </Button>
   );
 }

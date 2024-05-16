@@ -2,13 +2,12 @@ import React, {useState} from 'react';
 import {Avatar, Box, Divider, IconButton, Stack, Typography} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import useResponsive from "../../hooks/useResponsive";
-import {faker} from "@faker-js/faker";
 import {CaretLeft } from "phosphor-react";
-import Shortcuts from "../../sections/settings/Shortcuts";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {UpdateSidebarLink} from "../../redux/slices/appSlice";
 import {Settings_Menu} from "../../_data/_settings";
+import RightEmpty from "../../components/RightEmpty";
 
 
 const Settings = () => {
@@ -64,12 +63,12 @@ const Settings = () => {
                             }}>
                                 <CaretLeft/>
                             </IconButton>
-                            <Typography variant={"h6"}>Настройки</Typography>
+                            <Typography variant="h6">Настройки</Typography>
                         </Stack>
                         {/*profile*/}
                         <Stack direction="row" spacing={3} alignItems={"center"}>
                             <Avatar sx={{width: 56, height: 56}} src={user.image}
-                                    alt={faker.person.fullName()}/>
+                                    alt={user.last_name}/>
                             <Stack spacing={0.5}>
                                 <Typography variant="article">{user.first_name} {" "}{user.last_name}</Typography>
                                 <Typography variant="body2">{user.about.substring(0,25)}...</Typography>
@@ -96,8 +95,9 @@ const Settings = () => {
                     </Stack>
                 </Box>
                 {/*  setting right side */}
+                <RightEmpty />
             </Stack>
-            {openShortcuts && <Shortcuts open={openShortcuts} handleClose={handleCloseShortcuts}/>}
+            {/*{openShortcuts && <Shortcuts open={openShortcuts} handleClose={handleCloseShortcuts}/>}*/}
         </>)
 };
 

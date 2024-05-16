@@ -11,7 +11,7 @@ import Media from "../../sections/dashboard/SharedMessages";
 import ListUsersDialog from "../../sections/main/ListUsersDialog";
 import {getSocket} from "../../socket";
 import {showSnackBar} from "../../redux/slices/appSlice";
-import {fetchUserConversations, setCurrentMessages, UpdateIsSent} from "../../redux/slices/messagesSlice";
+import {fetchUserConversations, setCurrentMessages } from "../../redux/slices/messagesSlice";
 
 const GeneralApp = () => {
     const {user} = useSelector(store => store.auth);
@@ -21,7 +21,7 @@ const GeneralApp = () => {
 
     const theme = useTheme();
     const {allUsers} = useSelector(store => store.auth);
-    const { isChatActive, isSent } = useSelector(store => store.messages);
+    const { isChatActive } = useSelector(store => store.messages);
     const {current_conversation} = useSelector(store => store.messages.chat);
     const usersArray = allUsers;
 
@@ -41,34 +41,23 @@ const GeneralApp = () => {
             dispatch(showSnackBar(
                 {
                     open: true,
-                    message: "New message received",
+                    message: "Получено новое сообщение",
                     severity: "success",
                 }
             ));
             updateStates(data);
-            dispatch(UpdateIsSent());
         })
 
         socket.on("message_sent", (data) => {
-            dispatch(showSnackBar(
-                {
-                    open: true,
-                    message: "message sent successfully",
-                    severity: "success",
-                }
-            ));
             updateStates(data);
-            dispatch(UpdateIsSent());
         })
 
         socket.on("start_chat", (data) => {
             updateStates(data);
-            dispatch(UpdateIsSent());
         });
 
         socket.on("get_user_conversations", (data) => {
             dispatch(fetchUserConversations(data));
-            dispatch(UpdateIsSent());
         })
 
         // Remove event
@@ -79,11 +68,11 @@ const GeneralApp = () => {
             socket?.off("message_received");
             socket?.off('get_user_conversations');
         }
-    }, [openDialog, dispatch]);
+    }, [openDialog, dispatch, socket]);
+
 
     useEffect(() => {
         socket.emit('get_direct_conversation', {user_id: user._id});
-        // console.log("get_direct_conversation emit");
 
         socket.on("get_user_conversations", (data) => {
             dispatch(fetchUserConversations(data));
@@ -92,7 +81,7 @@ const GeneralApp = () => {
             socket?.off('get_direct_conversation');
             socket?.off('get_user_conversations');
         };
-    }, [ dispatch, isSent]);
+    }, [ dispatch]);
 
     return (
         <>

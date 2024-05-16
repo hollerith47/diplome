@@ -19,12 +19,12 @@ const GroupChat = () => {
                     variant="subtitle1"
                     sx={{color: "text.secondary"}}
                 >
-                    Group Chat
+                    Групповой чат
                 </Typography>
                 <Box sx={{flexGrow: 1}}>
                 </Box>
                 <TextField
-                    placeholder="send a message..."
+                    placeholder="Напишите сообщение..."
                     size="small"
                     InputProps={{
                         endAdornment: (

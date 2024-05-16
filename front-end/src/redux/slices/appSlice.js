@@ -21,6 +21,7 @@ const initialState = {
     showOverlay: true,
     participants: [],
     socketId: null,
+    fullscreen: false,
 }
 
 //actions
@@ -65,12 +66,6 @@ export function SetParticipants(value) {
         dispatch(updateParticipants(value));
     }
 }
-
-export const SelectConversation = ({room_id}) => {
-    return async (dispatch, getState) => {
-        dispatch(slice.actions.selectConversation({room_id}));
-    };
-};
 
 export const showSnackBar = ({ severity, message }) => async (dispatch, getState) => {
     dispatch(slice.actions.openSnackBar({message, severity}));
@@ -127,6 +122,9 @@ const slice = createSlice({
             state.snackbar.open = false;
             state.snackbar.severity = null;
             state.snackbar.message = null;
+        },
+        updateFullScreenState(state) {
+            state.fullscreen =!state.fullscreen;
         }
     }
 });
@@ -143,6 +141,7 @@ export const {
     UpdateSidebarType,
     updateSocketId,
     closeSnackBar,
+    updateFullScreenState,
     openSnackBar,
     selectConversation
 } = slice.actions;

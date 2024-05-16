@@ -19,8 +19,11 @@ const logoutBuilder = (builder) => {
                 setTimeout(()=> { toast.dismiss()},2000);
             })
             .addCase(logoutUser.rejected, state => {
-                state.isLoading = true;
-                state.isLoggedIn = true;
+                state.isLoggedIn = false;
+                state.isLoading = false;
+                state.token = "";
+                state.user = null;
+                state.allUsers = null;
                 toast.update(state.logoutToast, {render: "Logout failed", isLoading: false, type: "error"});
                 setTimeout(()=> { toast.dismiss()},2000);
             })

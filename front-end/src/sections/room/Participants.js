@@ -22,7 +22,7 @@ const Participants = () => {
                 flexDirection: "column",
                 rowGap: 2,
             }}>
-                <Typography variant="subtitle1" sx={{color: "text.secondary"}}>Participants Box</Typography>
+                <Typography variant="subtitle1" sx={{color: "text.secondary"}}>Участники</Typography>
                 <Stack>
                     {participants && participants.length > 0 && participants.map(({id, identity})=>(
                         <Stack key={id} spacing={0.5} justifyContent="center">

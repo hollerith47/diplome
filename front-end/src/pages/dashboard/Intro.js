@@ -24,14 +24,14 @@ const Intro = () => {
                         variant="contained"
                         onClick={pushToJoinRoomPage}
                     >
-                        Join Meeting
+                        Присоединиться к встрече
                     </Button>
                     <Button
                         fullWidth
                         variant="outlined"
                         onClick={pushToJoinRoomPageAsHost}
                     >
-                        Host Meeting
+                        Организовать встречу
                     </Button>
                 </Stack>
             </CardContainer>

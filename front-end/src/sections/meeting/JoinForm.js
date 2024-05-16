@@ -15,11 +15,11 @@ const JoinForm = () => {
     const dispatch = useDispatch();
     const {isRoomHost, connectionOnlyWithAudio} = useSelector(store => store.app);
     const JoinSchema = Yup.object().shape({
-        meeting_id: Yup.string().required("Meeting ID is required"),
-        user_name: Yup.string().required("Username is required"),
+        meeting_id: Yup.string().required("Требуется ID встречи"),
+        user_name: Yup.string().required("Требуется имя пользователя"),
     });
     const createRoomSchema = Yup.object().shape({
-        user_name: Yup.string().required("Username is required"),
+        user_name: Yup.string().required("Требуется имя пользователя"),
     })
     const defaultValues = {
         meeting_id: "",
@@ -54,7 +54,7 @@ const JoinForm = () => {
             reset();
             setError("afterSubmit", {
                 ...error,
-                message: "Meeting not found. Check your meeting ID and try again",
+                message: "Встреча не найдена. Проверьте ID встречи и попробуйте снова.",
             })
         }
     }
@@ -70,9 +70,6 @@ const JoinForm = () => {
     }
 
     const createRoom = () => {
-        // navigate("/room")
-        // console.log("createRoom");
-        // console.log("username: " + username);
         navigate("/room");
     }
 
@@ -85,7 +82,7 @@ const JoinForm = () => {
             if (full) {
                 // room full
                 setError("afterSubmit", {
-                    message: "Meeting is full. Please try again later",
+                    message: "Встреча заполнена. Пожалуйста, попробуйте позже.",
                 })
             }else {
                 // join room
@@ -95,7 +92,7 @@ const JoinForm = () => {
         }else {
             // room doesn't exist
             setError("afterSubmit", {
-                message: "Meeting not found. Check your meeting ID and try again",
+                message: "Встреча не найдена. Проверьте ID встречи и попробуйте снова.",
             })
         }
 
@@ -107,24 +104,24 @@ const JoinForm = () => {
             <Stack spacing={3}>
                 {!!errors.afterSubmit && <Alert severity="error">{errors.afterSubmit.message}</Alert>}
                 {isSubmitting && <SubmittingLoader />}
-                {isSubmitSuccessful && <Alert severity="success">{"form submitted successfully"}</Alert>}
+                {isSubmitSuccessful && <Alert severity="success">{"Форма успешно отправлена"}</Alert>}
 
                 {!isRoomHost &&
-                    <RHFTextField name="meeting_id" label="Meeting ID"/>
+                    <RHFTextField name="meeting_id" label="ID встречи"/>
                 }
-                <RHFTextField name="user_name" label="Enter your name"/>
+                <RHFTextField name="user_name" label="Введите ваше имя"/>
                 <Stack direction="row" alignItems="center" spacing={0.5}>
                     <Checkbox checked={connectionOnlyWithAudio} onChange={(e)=> {
                         dispatch(SetConnectionOnlyWithAudio(e.target.checked))
                     }}/>
-                    <Typography variant="subtitle2">Audio only</Typography>
+                    <Typography variant="subtitle2">Только аудио</Typography>
                 </Stack>
                 <Stack direction="row" alignItems="center" spacing={2}>
                     <Button fullWidth variant="contained" type="submit">
-                        {isRoomHost ? "Host" : "Join"}
+                        {isRoomHost ? "Начать" : "Присоединиться"}
                     </Button>
                     <Button fullWidth variant="outlined" color="error" onClick={handleCancel}>
-                        Cancel
+                        Отменить
                     </Button>
                 </Stack>
             </Stack>

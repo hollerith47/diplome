@@ -6,7 +6,7 @@ import {useSelector} from "react-redux";
 
 const Join = () => {
     const {isRoomHost} = useSelector(store => store.app);
-    const titleText = isRoomHost ? "Host Meeting" : "Join Meeting";
+    const titleText = isRoomHost ? "Провести встречу" : "Присоединиться к встрече";
 
     return (
         <>

@@ -80,7 +80,7 @@ const showLocalVideoPreview = (stream) => {
 
     videoContainer.appendChild(videoElement);
     if (store.getState().app.connectionOnlyWithAudio) {
-        videoContainer.appendChild(getAudioLabel("You"))
+        videoContainer.appendChild(getAudioLabel("(ВЫ)"))
     }
     videosContainer.appendChild(videoContainer);
 }
@@ -152,7 +152,7 @@ const getAudioLabel = (labelText) => {
     const label = document.createElement("p");
     label.classList.add("label_only_audio_text");
     // TODO: get the participant identity
-    label.innerHTML = `Only audio <br> ${labelText}`;
+    label.innerHTML = `${labelText}`;
     label.style.color = "blue";
     return labelContainer.appendChild(label);
 }
