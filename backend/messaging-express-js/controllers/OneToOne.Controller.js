@@ -5,15 +5,29 @@ const User = require("../models/user.model");
 const textMessageHandler = async (data, socket, io) => {
     // data : {to, from, message, conversation_id, type}
     // console.log("received text message", data)
-    let { from, message, type, to} = data;
+    let { from, message, type, to, file} = data;
 
-    const new_message = {
-        to,
-        from,
-        type,
-        text: message,
-        created_at: Date.now(),
+    let new_message;
+
+    if (file){
+        new_message = {
+            to,
+            from,
+            type,
+            text: message,
+            created_at: Date.now(),
+            file: file
+        }
+    }else{
+        new_message = {
+            to,
+            from,
+            type,
+            text: message,
+            created_at: Date.now(),
+        }
     }
+
     // create a new conversation if not already existing
     try {
         const checkConversationId = await getConversationId(to, from);

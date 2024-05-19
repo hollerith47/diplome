@@ -109,11 +109,6 @@ io.on('connection', async (socket) => {
         await textMessageHandler(data, socket, io)
     })
 
-    // handle file messages
-    socket.on("file_message", (data)=>{
-        console.log("received file message", data)
-        fileMessageHandler(data, socket)
-    })
 
     // *********************************************************************************** //
     // handle Room
@@ -144,24 +139,6 @@ io.on('connection', async (socket) => {
     })
 })
 
-const fileMessageHandler = (data, socket) => {
-    // data : {to, from, text, file}
-    // get the file extension
-    const fileExtension = path.extname(data.file.name);
-
-    // generate a unique filename
-    const fileName = `${Date.now()}_${Math.random() * 1000}.${fileExtension}`
-
-    // upload file to AWS s3
-
-    // create a new conversation if not already existing
-
-    // save to database
-
-    // emit incoming_message -> to user
-
-    // emit outgoing_message -> from user
-}
 server.listen(PORT, async ()=>{
     await connectDB();
     await loginAPI();
