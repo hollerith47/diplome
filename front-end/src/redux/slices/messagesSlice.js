@@ -1,9 +1,13 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {toast} from "react-toastify";
 import axios from "axios";
-import {BASE_FLASK_API} from "../../config";
+import CryptoJS from "crypto-js";
+import {BASE_FLASK_API, ENCRYPTION_KEY} from "../../config";
 import {getSocket} from "../../socket";
 import {decrypt, encrypt} from "../../dataEncryption";
+
+// const secretKey = "1679e3a60a7d2123141074a836e1681a";
+const secretKey = ENCRYPTION_KEY;
 
 const user_id = window.localStorage.getItem('user_id');
 
@@ -21,6 +25,7 @@ export const checkTextToxicity = async (texts) => {
     try {
         const response = await axios.post(`${BASE_FLASK_API}/check-texts`, {texts: texts});
         // const isToxic =
+        console.log(response.data)
         return response.data[0].is_toxic;
     } catch (error) {
         console.log("checkTextToxicity Error:", error);
@@ -36,11 +41,11 @@ export const checkAndSendText = createAsyncThunk(
         try {
             const isToxic = await checkTextToxicity(text);
             toast.dismiss(toastId);  // Enlever le toast de chargement
-
             if (!isToxic) {
                 const socket = getSocket();
+                const encrypted = CryptoJS.AES.encrypt(text, secretKey).toString();
                 socket.emit("text_message", {
-                    message: text,
+                    message: encrypted,
                     from: userId,
                     to: conversationId,
                     type: type,
@@ -53,6 +58,7 @@ export const checkAndSendText = createAsyncThunk(
             }
         } catch (error) {
             toast.dismiss(toastId);
+            console.log(error)
             toast.error("Error checking toxicity: " + error.message);
             return false;
         }
@@ -90,10 +96,11 @@ export const checkAndSendImages = createAsyncThunk(
             toast.dismiss(toastId);
             if (!imageResponse.is_toxic) {
                 const socket = getSocket();
-                const fileUrl = `${BASE_FLASK_API}${imageResponse.image}`
+                const fileUrl = `${BASE_FLASK_API}${imageResponse.image}`;
+                const encrypted = CryptoJS.AES.encrypt(formData.get('text'), secretKey).toString();
 
                 socket.emit("text_message", {
-                    message: isTextToxic ? "" : formData.get('text'),
+                    message: isTextToxic ? "" : encrypted,
                     from: formData.get('userId'),
                     to: formData.get('toUserId'),
                     type: "img",
@@ -121,6 +128,12 @@ const slice = createSlice({
             if (Array.isArray(action.payload)) {
                 state.chat.user_conversations = action.payload.flatMap(item => {
                     const lastMessage = item.messages[item.messages.length - 1];
+                    let decrypted
+                    if (lastMessage){
+                        const bytes  = CryptoJS.AES.decrypt(lastMessage, secretKey);
+                        decrypted = bytes.toString(CryptoJS.enc.Utf8);
+                    }
+
                     return item.participants
                         .filter(participant => participant._id !== user_id)
                         .map(participant => ({
@@ -130,13 +143,18 @@ const slice = createSlice({
                             online: participant.status === "Online",
                             unread: 0,
                             pinned: false,
-                            msg: lastMessage ? lastMessage.text : null
+                            msg: lastMessage ? decrypted : null
                         }))
                 });
             }else if (typeof action.payload === "object" && action.payload !== null) {
                 // Gérer un seul objet représentant une conversation
                 const conversation = action.payload;
                 const lastMessage = conversation.messages ? conversation.messages[conversation.messages.length - 1] : null;
+                let decrypted;
+                if (lastMessage){
+                    const bytes  = CryptoJS.AES.decrypt(lastMessage, secretKey);
+                    decrypted = bytes.toString(CryptoJS.enc.Utf8);
+                }
 
                 if (Object.keys(action.payload).length > 0) {
                     const otherParticipant = conversation.participants.find(participant => participant._id !== user_id);
@@ -147,7 +165,7 @@ const slice = createSlice({
                             name: `${otherParticipant.first_name} ${otherParticipant.last_name}`,
                             img: otherParticipant.image,
                             online: otherParticipant.status === "Online",
-                            msg: lastMessage ? lastMessage.text : null  // Utiliser le texte du dernier message
+                            msg: lastMessage ? decrypted : null  // Utiliser le texte du dernier message
                         };
                     } else {
                         console.error("No valid participant found in the conversation.");
@@ -213,11 +231,13 @@ function processMessages(messages, currentUserId) {
 
         // Déterminer si le message est entrant ou sortant
         const isOutgoing = message.from === currentUserId;
+        const bytes  = CryptoJS.AES.decrypt(message.text, secretKey);
+        const decrypted = bytes.toString(CryptoJS.enc.Utf8);
         processedMessages.push({
             type: "msg",
             subtype: message.type,
             img: message.file,
-            message: decrypt(message.text),
+            message: decrypted,
             incoming: !isOutgoing,
             outgoing: isOutgoing,
         });

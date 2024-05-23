@@ -1,13 +1,14 @@
-import {ENCRYPTION_KEY} from "../config";
-
-const Cryptr = require("cryptr");
-const cryptr = new Cryptr(ENCRYPTION_KEY);
+import CryptoJS from 'crypto-js';
 
 
-export function encrypt(text){
-    return cryptr.encrypt(text);
+// Encrypt
+// const encrypted = CryptoJS.AES.encrypt(message, ENCRYPTION_KEY).toString();
+export function encrypt (text, secretKey){
+    return CryptoJS.AES.encrypt(text, secretKey).toString();
 }
 
-export function decrypt(text){
-    return cryptr.decrypt(text);
+// Decrypt
+export function decrypt (encryptedText, secretKey){
+    const bytes  = CryptoJS.AES.decrypt(encryptedText, secretKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
 }
