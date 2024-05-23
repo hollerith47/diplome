@@ -7,6 +7,7 @@ import { PATH_DASHBOARD } from "./routes/paths";
 export const BASE_FLASK_API = process.env.REACT_APP_FLASK_API_URL;
 
 export const BASE_BACKEND_URL = process.env.REACT_APP_BASE_API_URL;
+export const ENCRYPTION_KEY = process.env.REACT_APP_ENCRYPTION_KEY;
 export const BASE_NODE_API_URL = process.env.REACT_APP_NODE_API;
 
 export const defaultSettings = {

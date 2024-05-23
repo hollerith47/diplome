@@ -3,6 +3,7 @@ import {toast} from "react-toastify";
 import axios from "axios";
 import {BASE_FLASK_API} from "../../config";
 import {getSocket} from "../../socket";
+import {decrypt, encrypt} from "../../dataEncryption";
 
 const user_id = window.localStorage.getItem('user_id');
 
@@ -39,7 +40,7 @@ export const checkAndSendText = createAsyncThunk(
             if (!isToxic) {
                 const socket = getSocket();
                 socket.emit("text_message", {
-                    message: text,
+                    message: encrypt(text),
                     from: userId,
                     to: conversationId,
                     type: type,
@@ -75,7 +76,7 @@ const slice = createSlice({
                             online: participant.status === "Online",
                             unread: 0,
                             pinned: false,
-                            msg: lastMessage ? lastMessage.text : null
+                            msg: lastMessage ? decrypt(lastMessage.text) : null
                         }))
                 });
             }else {
@@ -136,7 +137,7 @@ function processMessages(messages, currentUserId) {
         const isOutgoing = message.from === currentUserId;
         processedMessages.push({
             type: "msg",
-            message: message.text,
+            message: decrypt(message.text),
             incoming: !isOutgoing,
             outgoing: isOutgoing,
         });
