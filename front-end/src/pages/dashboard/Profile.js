@@ -5,9 +5,11 @@ import {faker} from "@faker-js/faker";
 import {useTheme} from "@mui/material/styles";
 import ProfileForm from "../../sections/settings/ProfileForm";
 import {useNavigate} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 const Profile = () => {
   const theme = useTheme();
+  const { user } = useSelector(store => store.auth)
   const navigate = useNavigate();
   return (
     <>
@@ -29,12 +31,12 @@ const Profile = () => {
               <IconButton onClick={() => navigate("/app")}>
                 <CaretLeft size={24} color={"#4b4b4b"}/>
               </IconButton>
-              <Typography variant={"h5"}>Profile</Typography>
+              <Typography variant={"h5"}>Профиль</Typography>
             </Stack>
             {/*profile*/}
-            <Stack direction={"row"} spacing={3} alignItems={"center"} justifyContent={"center"}>
-              <Avatar sx={{width: "7.5rem", height: "7.5rem"}} src={faker.image.avatar()}
-                      alt={faker.person.fullName()}/>
+            <Stack direction="row" spacing={3} alignItems={"center"} justifyContent={"center"}>
+              <Avatar sx={{width: "7.5rem", height: "7.5rem"}} src={user.image}
+                      alt={user.last_name}/>
             </Stack>
             {/* profile Info */}
             <Stack>

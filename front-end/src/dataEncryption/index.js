@@ -1,8 +1,6 @@
 import CryptoJS from 'crypto-js';
 import {ENCRYPTION_KEY} from "../config";
 
-const secretKey = 'your-secret-key';
-const message = "Secret Message";
 
 
 // Encrypt
@@ -12,7 +10,7 @@ export function encrypt (text){
 }
 
 // Decrypt
-export function decrypt (encryptedText){
-    const bytes  = CryptoJS.AES.decrypt(encryptedText, ENCRYPTION_KEY);
+export function decrypt (encryptedText) {
+    const bytes = CryptoJS.AES.decrypt(encryptedText, ENCRYPTION_KEY);
     return bytes.toString(CryptoJS.enc.Utf8);
 }
