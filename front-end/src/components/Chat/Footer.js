@@ -14,7 +14,7 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import {useDispatch, useSelector} from "react-redux";
 import ChatInput from "./ChatInput";
-import {checkAndSendText} from "../../redux/slices/messagesSlice";
+import {checkAndSendImages, checkAndSendText} from "../../redux/slices/messagesSlice";
 
 function linkify(text) {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -37,6 +37,7 @@ const Footer = () => {
     const {sideBar} = useSelector(store => store.app);
     const [openPicker, setOpenPicker] = useState(false);
     const [value, setValue] = useState("");
+    const [file, setFile] = useState(null);
     const inputRef = useRef(null);
 
     function handleEmojiClick(emoji) {
@@ -56,13 +57,39 @@ const Footer = () => {
         }
     }
 
-    async function sendMessage() {
-        if (value.trim() !== "") {
-            const messageContent = linkify(value);
-            const type = containsUrl(value) ? "Link" : "Text"
+    function handleFileSelect(event) {
+        const selectedFile = event.target.files[0];
+        if (selectedFile) {
+            setFile(selectedFile);
+        }
+    }
 
-            dispatch(checkAndSendText({text: messageContent, userId: user_id, conversationId: current_conversation?._id, type: type }))
+    async function sendMessage() {
+        if (value.trim() !== "" && !file) {
+            const messageContent = linkify(value);
+            const type = file ? file.type : (containsUrl(value) ? "Link" : "Text");
+            const fileName = file ? file.name : null
+
+            const data = {
+                text: messageContent,
+                userId: user_id,
+                conversationId: current_conversation?._id,
+                type: type,
+                file: fileName,
+            }
+            dispatch(checkAndSendText(data))
             setValue("");
+            setFile(null);
+        }else if (file){
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('text', linkify(value));
+            formData.append('userId', user_id);
+            formData.append('toUserId', current_conversation?._id);
+            formData.append('type', file.type);
+            dispatch(checkAndSendImages(formData))
+            setValue("");
+            setFile(null);
         }
     }
 
@@ -110,6 +137,7 @@ const Footer = () => {
                             setValue={setValue}
                             openPicker={openPicker}
                             setOpenPicker={setOpenPicker}
+                            onFileSelect={handleFileSelect}
                         />
                     </Stack>
                     <Box

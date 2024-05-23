@@ -27,7 +27,7 @@ const Register = () => {
                 {/*right side*/}
                 <Stack sx={{width: "50%"}}>
                     <Stack direction={"row"} justifyContent={"space-between"}>
-                        <Typography variant={"h4"}>Register</Typography>
+                        <Typography variant={"h4"}>Регистрация</Typography>
                         {!isDesktop &&
                             <Stack sx={{alignSelf: 'flex-end'}}>
                                 <CLoseDialogIcon handleCloseDialog={handleCloseRegisterDialog}/>

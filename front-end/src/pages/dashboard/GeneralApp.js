@@ -68,7 +68,7 @@ const GeneralApp = () => {
             socket?.off("message_received");
             socket?.off('get_user_conversations');
         }
-    }, [openDialog, dispatch, socket]);
+    }, [openDialog, dispatch, socket, updateStates]);
 
 
     useEffect(() => {
@@ -81,7 +81,7 @@ const GeneralApp = () => {
             socket?.off('get_direct_conversation');
             socket?.off('get_user_conversations');
         };
-    }, [ dispatch]);
+    }, [ dispatch,socket]);
 
     return (
         <>

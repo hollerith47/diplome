@@ -18,16 +18,9 @@ const Actions = [
         y: 102,
         title: "фото",
         type: "image/*"
-    },
-    {
-        color: "#0159b2",
-        icon: <File size={24}/>,
-        y: 172,
-        title: "Файл/документ",
-        type: "application/*"
-    },
+    }
 ];
-const ChatInput = ({openPicker, setOpenPicker, setValue, value, inputRef}) => {
+const ChatInput = ({openPicker, setOpenPicker, setValue, value, inputRef, onFileSelect}) => {
     const [openActions, setOpenActions] = useState(false);
 
     return (
@@ -50,12 +43,13 @@ const ChatInput = ({openPicker, setOpenPicker, setValue, value, inputRef}) => {
                                 display: openActions ? "inline-block" : "none",
                             }}
                         >
-                            {Actions.map((el) => (
-                                <Tooltip placement="right" title={el.title}>
+                            {Actions.map((el, index) => (
+                                <Tooltip key={index} placement="right" title={el.title}>
                                     <Fab
-                                        onClick={() => {
-                                            setOpenActions(!openActions);
-                                        }}
+                                        onClick={() => document.getElementById(`file-input-${index}`).click()}
+                                        // onClick={() => {
+                                        //     setOpenActions(!openActions);
+                                        // }}
                                         sx={{
                                             position: "absolute",
                                             top: -el.y,
@@ -65,6 +59,13 @@ const ChatInput = ({openPicker, setOpenPicker, setValue, value, inputRef}) => {
                                     >
                                         {el.icon}
                                     </Fab>
+                                    <input
+                                        type="file"
+                                        id={`file-input-${index}`}
+                                        style={{display: "none"}}
+                                        accept={el.type}
+                                        onChange={onFileSelect}
+                                    />
                                 </Tooltip>
                             ))}
                         </Stack>

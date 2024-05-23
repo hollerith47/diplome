@@ -3,6 +3,7 @@ import {toast} from "react-toastify";
 import axios from "axios";
 import {BASE_FLASK_API} from "../../config";
 import {getSocket} from "../../socket";
+import {decrypt, encrypt} from "../../dataEncryption";
 
 const user_id = window.localStorage.getItem('user_id');
 
@@ -29,7 +30,7 @@ export const checkTextToxicity = async (texts) => {
 }
 export const checkAndSendText = createAsyncThunk(
     'messages/checkAndSendText',
-    async ({ text, userId, conversationId, type }, { dispatch, getState }) => {
+    async ({ text, userId, conversationId, type}, { dispatch, getState }) => {
         const toastId = toast.loading("Проверка сообщения перед отправкой...", {
             style: { backgroundColor: '#2C6E49', color: '#fff' }});
         try {
@@ -43,6 +44,60 @@ export const checkAndSendText = createAsyncThunk(
                     from: userId,
                     to: conversationId,
                     type: type,
+                });
+                toast.success("сообщение успешно отправлено!");
+                return true;
+            } else {
+                toast.error("Возможно, содержимое токсично и не будет отправлено.");
+                return false;
+            }
+        } catch (error) {
+            toast.dismiss(toastId);
+            toast.error("Error checking toxicity: " + error.message);
+            return false;
+        }
+    }
+);
+
+export const checkImagesToxicity = async (img) => {
+    try {
+        const formData = new FormData();
+        formData.append("image", img);
+        const response = await axios.post(`${BASE_FLASK_API}/check-images`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        // const isToxic =
+        // console.log("check Images toxicity");
+        // console.log(response.data.is_toxic);
+        return response.data;
+    } catch (error) {
+        console.log("checkTextToxicity Error:", error);
+        // return thunkAPI.rejectWithValue(error.message);
+        return false
+    }
+}
+export const checkAndSendImages = createAsyncThunk(
+    'messages/checkAndSendImages',
+    async (formData, { dispatch, getState }) => {
+        const toastId = toast.loading("Проверка сообщения перед отправкой...", {
+            style: { backgroundColor: '#2C6E49', color: '#fff' }});
+        try {
+            const imageResponse = await checkImagesToxicity(formData.get("file"));
+             // Enlever le toast de chargement
+            const isTextToxic = await checkTextToxicity(formData.get('text'));
+            toast.dismiss(toastId);
+            if (!imageResponse.is_toxic) {
+                const socket = getSocket();
+                const fileUrl = `${BASE_FLASK_API}${imageResponse.image}`
+
+                socket.emit("text_message", {
+                    message: isTextToxic ? "" : formData.get('text'),
+                    from: formData.get('userId'),
+                    to: formData.get('toUserId'),
+                    type: "img",
+                    file: fileUrl,
                 });
                 toast.success("сообщение успешно отправлено!");
                 return true;
@@ -78,7 +133,30 @@ const slice = createSlice({
                             msg: lastMessage ? lastMessage.text : null
                         }))
                 });
-            }else {
+            }else if (typeof action.payload === "object" && action.payload !== null) {
+                // Gérer un seul objet représentant une conversation
+                const conversation = action.payload;
+                const lastMessage = conversation.messages ? conversation.messages[conversation.messages.length - 1] : null;
+
+                if (Object.keys(action.payload).length > 0) {
+                    const otherParticipant = conversation.participants.find(participant => participant._id !== user_id);
+
+                    if (otherParticipant) {
+                        state.chat.current_conversation = {
+                            _id: otherParticipant._id,
+                            name: `${otherParticipant.first_name} ${otherParticipant.last_name}`,
+                            img: otherParticipant.image,
+                            online: otherParticipant.status === "Online",
+                            msg: lastMessage ? lastMessage.text : null  // Utiliser le texte du dernier message
+                        };
+                    } else {
+                        console.error("No valid participant found in the conversation.");
+                    }
+                }else {
+                    console.error("action.payload is an empty object");
+                }
+            }
+            else {
                 console.error("Expected an array for action.payload, received:", action.payload);
             }
         },
@@ -87,14 +165,11 @@ const slice = createSlice({
         },
         setCurrentMessages(state, action) {
             const chatList = action.payload.messages ? action.payload.messages : {};
-            state.chat.current_messages = processMessages(chatList, user_id)
+            state.chat.current_messages = processMessages(chatList, user_id);
         },
         setIsChatActive(state) {
             state.isChatActive = !state.isChatActive;
         },
-        setIsToxicFalse(state) {
-            state.isToxicContent = false;
-        }
     },
     extraReducers: builder => {
         // builder
@@ -112,9 +187,13 @@ const slice = createSlice({
     }
 })
 
-export const {fetchUserConversations, setIsToxicFalse, setIsChatActive, setCurrentConversation, setCurrentMessages} = slice.actions;
+export const {fetchUserConversations, setIsChatActive, setCurrentConversation, setCurrentMessages} = slice.actions;
 
 function processMessages(messages, currentUserId) {
+    if (!Array.isArray(messages)) {
+        return []; // Retourner immédiatement un tableau vide si 'messages' n'est pas un tableau
+    }
+
     const processedMessages = [];
     let lastDate = null;
 
@@ -123,7 +202,7 @@ function processMessages(messages, currentUserId) {
 
         // Ajouter un diviseur de date si la date change
         if (lastDate !== messageDate) {
-            if (lastDate !== null) { // Éviter d'ajouter un diviseur avant le premier message
+            if (lastDate !== null) {
                 processedMessages.push({
                     type: "divider",
                     text: messageDate === new Date().toDateString() ? "Сегодня" : messageDate
@@ -136,7 +215,9 @@ function processMessages(messages, currentUserId) {
         const isOutgoing = message.from === currentUserId;
         processedMessages.push({
             type: "msg",
-            message: message.text,
+            subtype: message.type,
+            img: message.file,
+            message: decrypt(message.text),
             incoming: !isOutgoing,
             outgoing: isOutgoing,
         });
@@ -144,6 +225,7 @@ function processMessages(messages, currentUserId) {
 
     return processedMessages;
 }
+
 
 const formatDate = (date) => {
     return new Date(date).toLocaleDateString('ru-RU', {

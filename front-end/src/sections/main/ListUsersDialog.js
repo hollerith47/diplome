@@ -7,7 +7,8 @@ import AvatarWithOnline from "../../components/ChatElements/AvatarWithOnline";
 import ShowDialog from "../../components/dialog/ShowDialog";
 import {getSocket} from "../../socket";
 import {useNavigate} from "react-router-dom";
-import { useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {setCurrentConversation} from "../../redux/slices/messagesSlice";
 
 const ListUsersDialogHeader = ({setSearchTerm}) => (
     <Stack sx={{flexGrow: 1}}>
@@ -25,6 +26,7 @@ const ListUsersDialogHeader = ({setSearchTerm}) => (
 )
 
 const CreateCallDialogBody = ({usersList, searchTerm, handleClose}) => {
+    const dispatch = useDispatch()
     const navigate = useNavigate();
     const { user } = useSelector(store => store.auth);
     const user_id = user._id;
@@ -34,10 +36,22 @@ const CreateCallDialogBody = ({usersList, searchTerm, handleClose}) => {
     );
 
     const socket = getSocket();
+
+
     const handleBeginConversation = (to, from) => {
         socket.emit('start_conversation', {to: to, from: from});
+        const current_user_info = usersList?.find(user => user._id === to);
+        console.log("current_user_info", current_user_info)
+        const current_conversation_user_info = {
+            _id: current_user_info._id,
+            name: `${current_user_info.first_name} ${current_user_info.last_name}`,
+            img: current_user_info.image,
+            online: current_user_info.online
+        }
         navigate(`/app`);
         handleClose();
+
+        dispatch(setCurrentConversation(current_conversation_user_info));
     }
 
     return (
